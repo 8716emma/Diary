@@ -14,17 +14,44 @@ themeBtn.addEventListener('click', () => {
 
 // --- 페이지 전환 로직 ---
 function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
+    // 모든 페이지 숨기기
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+        page.style.display = 'none'; // 레이아웃 꼬임 방지
+    });
+    
+    // 선택한 페이지 표시
+    const selectedPage = document.getElementById(pageId);
+    if (selectedPage) {
+        selectedPage.style.display = 'flex';
+        // 애니메이션 효과를 위해 약간의 지연 후 클래스 추가
+        setTimeout(() => {
+            selectedPage.classList.add('active');
+        }, 10);
+    }
 
+    // 네비게이션 아이템 활성화 상태 변경
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        if (item.getAttribute('onclick').includes(pageId)) item.classList.add('active');
+        // onclick 속성에 해당 pageId가 포함되어 있는지 확인
+        const clickAttr = item.getAttribute('onclick');
+        if (clickAttr && clickAttr.includes(pageId)) {
+            item.classList.add('active');
+        }
     });
 
+    // 특정 페이지 진입 시 스크롤 상단으로
+    document.getElementById('app').scrollTop = 0;
+
+    // 페이지별 추가 작업
     if (pageId === 'wheelPage') drawWheel();
 }
 window.showPage = showPage;
+
+// 초기 페이지 설정 (레이아웃 보정)
+document.addEventListener('DOMContentLoaded', () => {
+    showPage('wheelPage');
+});
 
 // --- 돌림판 로직 ---
 const canvas = document.getElementById('wheelCanvas');
@@ -43,11 +70,12 @@ let spinTimeTotal = 0;
 const colors = ["#FFC312", "#F79F1F", "#E67E22", "#D35400", "#C0392B", "#E74C3C", "#9B59B6", "#8E44AD", "#2980B9", "#3498DB", "#1ABC9C", "#16A085", "#27AE60", "#2ECC71", "#34495E", "#2C3E50"];
 
 function drawWheel() {
-    const outsideRadius = 200, textRadius = 160, insideRadius = 50;
+    if (!canvas) return;
+    const outsideRadius = 180, textRadius = 140, insideRadius = 40;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = document.body.classList.contains('light-mode') ? "#ccc" : "#fff";
     ctx.lineWidth = 2;
-    ctx.font = 'bold 18px Pretendard, sans-serif';
+    ctx.font = 'bold 16px Pretendard, sans-serif';
     for (let i = 0; i < options.length; i++) {
         const angle = startAngle + i * arc;
         ctx.fillStyle = colors[i % colors.length];
@@ -80,11 +108,20 @@ function stopRotateWheel() {
     resultDiv.innerHTML = `결과: <span style="color:${colors[index % colors.length]}">${options[index]}</span>`;
 }
 function easeOut(t, b, c, d) { const ts = (t /= d) * t, tc = ts * t; return b + c * (tc + -3 * ts + 3 * t); }
-addOptionBtn.addEventListener('click', () => {
-    if (optionInput.value.trim() !== '') { options.push(optionInput.value); optionInput.value = ''; arc = Math.PI / (options.length / 2); drawWheel(); }
-});
-spinBtn.addEventListener('click', () => { resultDiv.innerHTML = ''; spin(); });
-drawWheel();
+
+if (addOptionBtn) {
+    addOptionBtn.addEventListener('click', () => {
+        if (optionInput.value.trim() !== '') { 
+            options.push(optionInput.value); 
+            optionInput.value = ''; 
+            arc = Math.PI / (options.length / 2); 
+            drawWheel(); 
+        }
+    });
+}
+if (spinBtn) {
+    spinBtn.addEventListener('click', () => { resultDiv.innerHTML = ''; spin(); });
+}
 
 // --- AI 동물상 테스트 로직 (이미지 업로드 방식) ---
 const AI_URL = "https://teachablemachine.withgoogle.com/models/JZKjOD0_-/";
@@ -107,21 +144,19 @@ async function handleImageUpload(event) {
     const previewContainer = document.getElementById("image-preview-container");
     const faceImage = document.getElementById("face-image");
     const labelContainer = document.getElementById("label-container");
+    const resultMessage = document.getElementById("ai-result-message");
 
     spinner.classList.remove("hidden");
     labelContainer.innerHTML = "";
+    resultMessage.innerHTML = "";
+    resultMessage.classList.add("hidden");
     previewContainer.classList.add("hidden");
 
-    // 이미지 미리보기 세팅
     const reader = new FileReader();
     reader.onload = async (e) => {
         faceImage.src = e.target.result;
         previewContainer.classList.remove("hidden");
-        
-        // 모델 로드 및 예측
         await loadModel();
-        
-        // 이미지 객체 생성하여 예측 (약간의 딜레이를 주어 이미지가 완전히 로드되게 함)
         setTimeout(async () => {
             const prediction = await aiModel.predict(faceImage);
             displayResults(prediction);
@@ -134,32 +169,54 @@ window.handleImageUpload = handleImageUpload;
 
 function displayResults(prediction) {
     const labelContainer = document.getElementById("label-container");
+    const resultMessage = document.getElementById("ai-result-message");
     labelContainer.innerHTML = "";
 
+    let highestProb = 0;
+    let bestMatch = "";
+
     for (let i = 0; i < maxPredictions; i++) {
-        const classTitle = prediction[i].className === "Class 1" ? "강아지" : 
-                           prediction[i].className === "Class 2" ? "고양이" : prediction[i].className;
-        const probability = (prediction[i].probability * 100).toFixed(0);
+        const probValue = prediction[i].probability;
+        const className = prediction[i].className;
+        const classTitle = className === "Class 1" ? "강아지" : 
+                           className === "Class 2" ? "고양이" : className;
+        const probability = (probValue * 100).toFixed(0);
         
+        if (probValue > highestProb) {
+            highestProb = probValue;
+            bestMatch = classTitle;
+        }
+
         const barContainer = document.createElement("div");
         barContainer.className = "prediction-bar-container";
-        
         const bar = document.createElement("div");
         bar.className = "prediction-bar";
         bar.style.width = probability + "%";
-        
         const label = document.createElement("span");
         label.className = "prediction-label";
         label.innerHTML = `${classTitle}: ${probability}%`;
         
-        if (probability > 50) {
-            bar.style.background = "var(--accent-color)";
-        } else {
-            bar.style.background = "rgba(255, 255, 255, 0.3)";
-        }
+        if (probability > 50) bar.style.background = "var(--accent-color)";
+        else bar.style.background = "rgba(255, 255, 255, 0.3)";
         
         barContainer.appendChild(bar);
         barContainer.appendChild(label);
         labelContainer.appendChild(barContainer);
+    }
+
+    if (highestProb > 0) {
+        resultMessage.classList.remove("hidden");
+        let title = "", desc = "";
+        if (bestMatch === "강아지") {
+            title = "🐶 당신은 사랑스러운 강아지상!";
+            desc = "다정하고 붙임성 있는 성격으로 주변 사람들에게 긍정적인 에너지를 주시는군요! 웃는 모습이 매력적이며 누구에게나 편안함을 주는 타입입니다.";
+        } else if (bestMatch === "고양이") {
+            title = "🐱 당신은 시크한 고양이상!";
+            desc = "도도하고 지적인 분위기를 풍기며, 알면 알수록 깊은 매력을 가진 분이시네요! 신비로운 첫인상과 함께 세련된 분위기가 돋보이는 타입입니다.";
+        } else {
+            title = `🤔 당신은 ${bestMatch}상!`;
+            desc = "독특하고 개성 넘치는 매력을 가지고 계시네요! 자신만의 분위기로 주변의 시선을 사로잡는 타입입니다.";
+        }
+        resultMessage.innerHTML = `<h4>${title}</h4><p>${desc}</p>`;
     }
 }

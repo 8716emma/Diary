@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 동물상 & 돌림판</title>
+    <title>무료 AI 동물상 테스트 & 온라인 돌림판 - 즐거운 일상 도구</title>
+    <meta name="description" content="AI를 이용한 재미있는 동물상 테스트와 공정한 결정을 위한 온라인 돌림판 도구를 무료로 이용하세요. 강아지상, 고양이상 분석과 점심 메뉴 고르기 등 일상의 소소한 재미를 제공합니다.">
+    <meta name="keywords" content="동물상 테스트, AI 테스트, 돌림판, 온라인 돌림판, 점심 메뉴 추천, 무료 도구, 강아지상 고양이상, 인공지능 분석">
+    <meta name="author" content="AI 동물상 & 돌림판 서비스">
+    <link rel="canonical" href="https://8716emma.github.io/product/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://8716emma.github.io/product/">
+    <meta property="og:title" content="무료 AI 동물상 테스트 & 온라인 돌림판">
+    <meta property="og:description" content="AI 분석을 통한 동물상 테스트와 공정한 결정을 위한 온라인 돌림판 도구를 만나보세요.">
+    
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1437405101634727"
      crossorigin="anonymous"></script>
@@ -19,13 +30,14 @@
     <main id="app">
         <!-- 돌림판 페이지 -->
         <section id="wheelPage" class="page active">
-            <h1>돌림판</h1>
+            <h1>랜덤 돌림판</h1>
+            <p class="description-text">점심 메뉴 고르기나 당첨자 선정 등 공정한 결정이 필요할 때 사용해 보세요. 누구나 무료로 이용 가능합니다.</p>
             <div class="wheel-container">
                 <canvas id="wheelCanvas" width="500" height="500"></canvas>
                 <div class="pointer"></div>
             </div>
             <div class="controls">
-                <input type="text" id="optionInput" placeholder="옵션을 추가하세요">
+                <input type="text" id="optionInput" placeholder="예: 치킨, 피자, 중식">
                 <button id="addOptionBtn">추가</button>
                 <button id="spinBtn">돌리기</button>
             </div>
@@ -34,15 +46,15 @@
 
         <!-- AI 테스트 페이지 -->
         <section id="aiPage" class="page">
-            <h2>AI 동물상 테스트</h2>
-            <p>사진을 업로드하여 강아지상인지 고양이상인지 확인해보세요!</p>
+            <h2>AI 동물상 분석</h2>
+            <p class="description-text">구글 인공지능 모델을 활용하여 당신의 사진을 분석합니다. 강아지상, 고양이상 등 당신과 가장 닮은 동물을 찾아보세요!</p>
             <div class="ai-controls">
                 <label for="imageUpload" class="custom-file-upload">
-                    📷 사진 업로드하기
+                    📷 분석할 사진 선택하기
                 </label>
                 <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
             </div>
-            <div id="loading-spinner" class="hidden">모델 로딩 및 분석 중...</div>
+            <div id="loading-spinner" class="hidden">인공지능이 이미지를 정밀 분석 중입니다...</div>
             <div class="ai-content">
                 <div id="image-preview-container" class="hidden">
                     <img id="face-image" src="#" alt="미리보기">
@@ -52,24 +64,63 @@
             </div>
         </section>
 
+        <!-- 소개 페이지 -->
+        <section id="aboutPage" class="page">
+            <h2>서비스 소개</h2>
+            <div class="content-box">
+                <p>본 사이트는 일상 속 소소한 재미와 공정한 결정을 돕기 위해 제작된 무료 웹 도구입니다.</p>
+                <p><strong>AI 동물상 테스트</strong>는 Google Teachable Machine 모델을 기반으로 사진을 분석하며, 사용자의 사진은 서버에 저장되지 않고 브라우저 내에서 즉시 분석되어 안전합니다.</p>
+                <p><strong>온라인 돌림판</strong>은 복잡한 설정 없이 누구나 직관적으로 사용할 수 있도록 설계되었습니다.</p>
+            </div>
+        </section>
+
         <!-- 문의 페이지 -->
         <section id="contactPage" class="page">
-            <h3>제휴 문의</h3>
-            <p>함께 성장할 파트너를 찾습니다.</p>
+            <h3>제휴 및 서비스 문의</h3>
+            <p>궁금한 점이나 개선 제안이 있다면 언제든 문의해 주세요.</p>
             <form action="https://formspree.io/f/xqegggoe" method="POST" id="contactForm">
                 <div class="form-group">
                     <input type="text" name="name" placeholder="성함/업체명" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" name="email" placeholder="이메일 주소" required>
+                    <input type="email" name="email" placeholder="답변 받을 이메일 주소" required>
                 </div>
                 <div class="form-group">
-                    <textarea name="message" placeholder="문의 내용" required></textarea>
+                    <textarea name="message" placeholder="문의 내용을 입력해 주세요" required></textarea>
                 </div>
-                <button type="submit" id="submitBtn">문의하기</button>
+                <button type="submit" id="submitBtn">문의 보내기</button>
             </form>
         </section>
+
+        <!-- 개인정보처리방침 -->
+        <section id="privacyPage" class="page">
+            <h2>개인정보처리방침</h2>
+            <div class="content-box legal-text">
+                <p>1. 당사는 사용자의 사진 데이터를 서버에 수집하거나 저장하지 않습니다. 모든 AI 분석은 사용자의 기기 내에서 처리됩니다.</p>
+                <p>2. 구글 애드센스 등 제3자 광고 서비스가 사용자 경험 개선을 위해 쿠키를 사용할 수 있습니다.</p>
+                <p>3. 사용자는 브라우저 설정을 통해 쿠키 사용을 거부할 수 있습니다.</p>
+            </div>
+        </section>
+
+        <!-- 이용약관 -->
+        <section id="termsPage" class="page">
+            <h2>이용약관</h2>
+            <div class="content-box legal-text">
+                <p>1. 본 서비스는 무료로 제공되며, 결과에 대해 법적 책임을 지지 않습니다. 재미로만 즐겨주세요.</p>
+                <p>2. 타인의 사진을 무단으로 사용하는 것을 금지합니다.</p>
+                <p>3. 서비스의 안정적인 운영을 위해 지속적으로 노력하겠습니다.</p>
+            </div>
+        </section>
     </main>
+
+    <footer class="legal-footer">
+        <div class="legal-links">
+            <button onclick="showPage('aboutPage')">소개</button> |
+            <button onclick="showPage('privacyPage')">개인정보처리방침</button> |
+            <button onclick="showPage('termsPage')">이용약관</button>
+        </div>
+        <p class="copyright">&copy; 2026 AI 동물상 & 돌림판. All Rights Reserved.</p>
+    </footer>
 
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="showPage('wheelPage')">
