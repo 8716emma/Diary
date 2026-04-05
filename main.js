@@ -14,41 +14,32 @@ themeBtn.addEventListener('click', () => {
 
 // --- 페이지 전환 로직 ---
 function showPage(pageId) {
-    // 모든 페이지 숨기기
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
-        page.style.display = 'none'; // 레이아웃 꼬임 방지
+        page.style.display = 'none';
     });
     
-    // 선택한 페이지 표시
     const selectedPage = document.getElementById(pageId);
     if (selectedPage) {
         selectedPage.style.display = 'flex';
-        // 애니메이션 효과를 위해 약간의 지연 후 클래스 추가
         setTimeout(() => {
             selectedPage.classList.add('active');
         }, 10);
     }
 
-    // 네비게이션 아이템 활성화 상태 변경
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        // onclick 속성에 해당 pageId가 포함되어 있는지 확인
         const clickAttr = item.getAttribute('onclick');
         if (clickAttr && clickAttr.includes(pageId)) {
             item.classList.add('active');
         }
     });
 
-    // 특정 페이지 진입 시 스크롤 상단으로
     document.getElementById('app').scrollTop = 0;
-
-    // 페이지별 추가 작업
     if (pageId === 'wheelPage') drawWheel();
 }
 window.showPage = showPage;
 
-// 초기 페이지 설정 (레이아웃 보정)
 document.addEventListener('DOMContentLoaded', () => {
     showPage('wheelPage');
 });
@@ -60,9 +51,10 @@ const optionInput = document.getElementById('optionInput');
 const addOptionBtn = document.getElementById('addOptionBtn');
 const spinBtn = document.getElementById('spinBtn');
 const resultDiv = document.getElementById('result');
-let options = ['옵션 1', '옵션 2', '옵션 3', '옵션 4', '옵션 5', '옵션 6'];
+
+let options = []; 
 let startAngle = 0;
-let arc = Math.PI / (options.length / 2);
+let arc = 0;
 let spinTimeout = null;
 let spinAngleStart = 10;
 let spinTime = 0;
@@ -71,29 +63,73 @@ const colors = ["#FFC312", "#F79F1F", "#E67E22", "#D35400", "#C0392B", "#E74C3C"
 
 function drawWheel() {
     if (!canvas) return;
-    const outsideRadius = 180, textRadius = 140, insideRadius = 40;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = document.body.classList.contains('light-mode') ? "#ccc" : "#fff";
-    ctx.lineWidth = 2;
-    ctx.font = 'bold 16px Pretendard, sans-serif';
+    
+    if (options.length === 0) {
+        ctx.fillStyle = document.body.classList.contains('light-mode') ? "#666" : "#aaa";
+        ctx.font = '18px Pretendard, sans-serif';
+        ctx.textAlign = "center";
+        ctx.fillText("옵션을 추가해 주세요!", 250, 250);
+        
+        ctx.strokeStyle = document.body.classList.contains('light-mode') ? "#ddd" : "#333";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(250, 250, 180, 0, Math.PI * 2);
+        ctx.stroke();
+        return;
+    }
+
+    const outsideRadius = 200, textRadius = 150, insideRadius = 20;
+    arc = Math.PI / (options.length / 2);
+    ctx.textAlign = "start"; // 텍스트 정렬 초기화
+
     for (let i = 0; i < options.length; i++) {
         const angle = startAngle + i * arc;
-        ctx.fillStyle = colors[i % colors.length];
+        const grad = ctx.createRadialGradient(250, 250, insideRadius, 250, 250, outsideRadius);
+        grad.addColorStop(0, colors[i % colors.length]);
+        grad.addColorStop(1, adjustColor(colors[i % colors.length], -20));
+        
+        ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
         ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
-        ctx.stroke(); ctx.fill();
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.2)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
         ctx.save();
-        ctx.shadowColor = "rgba(0,0,0,0.4)"; ctx.shadowBlur = 5; ctx.fillStyle = "white";
+        ctx.shadowColor = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 4;
+        ctx.fillStyle = "white";
         ctx.translate(250 + Math.cos(angle + arc / 2) * textRadius, 250 + Math.sin(angle + arc / 2) * textRadius);
         ctx.rotate(angle + arc / 2 + Math.PI / 2);
         const text = options[i];
+        ctx.font = 'bold 18px Pretendard, sans-serif';
         ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
         ctx.restore();
     }
+    
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(250, 250, 10, 0, Math.PI * 2);
+    ctx.fill();
 }
 
-function spin() { spinTime = 0; spinTimeTotal = Math.random() * 3000 + 4000; rotateWheel(); }
+function adjustColor(color, amount) {
+    return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+}
+
+function spin() { 
+    if (options.length < 2) {
+        alert("최소 2개 이상의 옵션이 필요합니다!");
+        return;
+    }
+    spinTime = 0; 
+    spinTimeTotal = Math.random() * 3000 + 5000; 
+    rotateWheel(); 
+}
+
 function rotateWheel() {
     spinTime += 30;
     if (spinTime >= spinTimeTotal) { stopRotateWheel(); return; }
@@ -101,12 +137,15 @@ function rotateWheel() {
     startAngle += (spinAngle * Math.PI / 180); drawWheel();
     spinTimeout = requestAnimationFrame(rotateWheel);
 }
+
 function stopRotateWheel() {
     cancelAnimationFrame(spinTimeout);
     const degrees = startAngle * 180 / Math.PI + 90, arcd = arc * 180 / Math.PI;
     const index = Math.floor((360 - degrees % 360) / arcd);
-    resultDiv.innerHTML = `결과: <span style="color:${colors[index % colors.length]}">${options[index]}</span>`;
+    const resultText = options[index];
+    resultDiv.innerHTML = `<div class="result-badge">축하합니다!</div><div class="result-value" style="color:${colors[index % colors.length]}">${resultText}</div>`;
 }
+
 function easeOut(t, b, c, d) { const ts = (t /= d) * t, tc = ts * t; return b + c * (tc + -3 * ts + 3 * t); }
 
 if (addOptionBtn) {
@@ -114,16 +153,21 @@ if (addOptionBtn) {
         if (optionInput.value.trim() !== '') { 
             options.push(optionInput.value); 
             optionInput.value = ''; 
-            arc = Math.PI / (options.length / 2); 
             drawWheel(); 
         }
     });
+    optionInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addOptionBtn.click();
+    });
 }
 if (spinBtn) {
-    spinBtn.addEventListener('click', () => { resultDiv.innerHTML = ''; spin(); });
+    spinBtn.addEventListener('click', () => { 
+        resultDiv.innerHTML = '<div class="spinning-text">행운의 여신이 미소 짓는 중...</div>'; 
+        spin(); 
+    });
 }
 
-// --- AI 동물상 테스트 로직 (이미지 업로드 방식) ---
+// --- AI 동물상 테스트 로직 ---
 const AI_URL = "https://teachablemachine.withgoogle.com/models/JZKjOD0_-/";
 let aiModel, maxPredictions;
 
@@ -206,17 +250,31 @@ function displayResults(prediction) {
 
     if (highestProb > 0) {
         resultMessage.classList.remove("hidden");
-        let title = "", desc = "";
+        let title = "", desc = "", subDesc = "", emoji = "";
+        
         if (bestMatch === "강아지") {
-            title = "🐶 당신은 사랑스러운 강아지상!";
+            emoji = "🐶";
+            title = "당신은 사랑스러운 강아지상!";
             desc = "다정하고 붙임성 있는 성격으로 주변 사람들에게 긍정적인 에너지를 주시는군요! 웃는 모습이 매력적이며 누구에게나 편안함을 주는 타입입니다.";
+            subDesc = "✨ 특징: 선한 눈매, 밝은 미소, 활발한 소통 능력, 강한 친화력";
         } else if (bestMatch === "고양이") {
-            title = "🐱 당신은 시크한 고양이상!";
+            emoji = "🐱";
+            title = "당신은 시크한 고양이상!";
             desc = "도도하고 지적인 분위기를 풍기며, 알면 알수록 깊은 매력을 가진 분이시네요! 신비로운 첫인상과 함께 세련된 분위기가 돋보이는 타입입니다.";
+            subDesc = "✨ 특징: 날카롭지만 매혹적인 눈매, 신비로운 분위기, 독립적인 성향, 섬세한 감성";
         } else {
-            title = `🤔 당신은 ${bestMatch}상!`;
+            emoji = "🤔";
+            title = `당신은 유니크한 ${bestMatch}상!`;
             desc = "독특하고 개성 넘치는 매력을 가지고 계시네요! 자신만의 분위기로 주변의 시선을 사로잡는 타입입니다.";
+            subDesc = "✨ 특징: 예측 불가능한 매력, 강한 존재감, 남다른 패션 감각";
         }
-        resultMessage.innerHTML = `<h4>${title}</h4><p>${desc}</p>`;
+        
+        resultMessage.innerHTML = `
+            <div class="result-emoji">${emoji}</div>
+            <h4>${title}</h4>
+            <div class="result-desc">${desc}</div>
+            <div class="result-sub-desc">${subDesc}</div>
+            <div class="share-hint">친구들에게도 당신의 매력을 공유해 보세요!</div>
+        `;
     }
 }
