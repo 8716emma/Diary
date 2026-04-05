@@ -16,9 +16,10 @@ themeBtn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
     const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
     localStorage.setItem('theme', theme);
-    drawWheel(); // 테마 변경 시 다시 그리기 (텍스트 그림자 등 대응)
+    drawWheel(); 
 });
 
+// --- 돌림판 로직 ---
 let options = ['옵션 1', '옵션 2', '옵션 3', '옵션 4', '옵션 5', '옵션 6'];
 let startAngle = 0;
 let arc = Math.PI / (options.length / 2);
@@ -39,10 +40,8 @@ function drawWheel() {
     const insideRadius = 50;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.strokeStyle = document.body.classList.contains('light-mode') ? "#ccc" : "#fff";
     ctx.lineWidth = 2;
-
     ctx.font = 'bold 18px Pretendard, sans-serif';
 
     for (let i = 0; i < options.length; i++) {
@@ -69,7 +68,7 @@ function drawWheel() {
 
 function spin() {
     spinTime = 0;
-    spinTimeTotal = Math.random() * 3000 + 4000; // 4~7초 사이
+    spinTimeTotal = Math.random() * 3000 + 4000;
     rotateWheel();
 }
 
@@ -90,11 +89,8 @@ function stopRotateWheel() {
     const degrees = startAngle * 180 / Math.PI + 90;
     const arcd = arc * 180 / Math.PI;
     const index = Math.floor((360 - degrees % 360) / arcd);
-    ctx.save();
-    ctx.font = 'bold 30px Pretendard, sans-serif';
     const text = options[index];
     resultDiv.innerHTML = `결과: <span style="color:${colors[index % colors.length]}">${text}</span>`;
-    ctx.restore();
 }
 
 function easeOut(t, b, c, d) {
@@ -119,3 +115,83 @@ spinBtn.addEventListener('click', () => {
 });
 
 drawWheel();
+
+// --- AI 동물상 테스트 로직 ---
+const AI_URL = "https://teachablemachine.withgoogle.com/models/JZKjOD0_-/";
+let aiModel, webcam, labelContainer, maxPredictions;
+
+async function initAI() {
+    const startBtn = document.getElementById("startAiBtn");
+    const spinner = document.getElementById("loading-spinner");
+    
+    startBtn.classList.add("hidden");
+    spinner.classList.remove("hidden");
+
+    const modelURL = AI_URL + "model.json";
+    const metadataURL = AI_URL + "metadata.json";
+
+    try {
+        aiModel = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = aiModel.getTotalClasses();
+
+        const flip = true;
+        webcam = new tmImage.Webcam(300, 300, flip);
+        await webcam.setup();
+        await webcam.play();
+        window.requestAnimationFrame(aiLoop);
+
+        spinner.classList.add("hidden");
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        
+        for (let i = 0; i < maxPredictions; i++) {
+            const barContainer = document.createElement("div");
+            barContainer.className = "prediction-bar-container";
+            
+            const bar = document.createElement("div");
+            bar.className = "prediction-bar";
+            bar.style.width = "0%";
+            
+            const label = document.createElement("span");
+            label.className = "prediction-label";
+            
+            barContainer.appendChild(bar);
+            barContainer.appendChild(label);
+            labelContainer.appendChild(barContainer);
+        }
+    } catch (e) {
+        console.error(e);
+        alert("카메라를 불러올 수 없거나 모델 로딩에 실패했습니다.");
+        startBtn.classList.remove("hidden");
+        spinner.classList.add("hidden");
+    }
+}
+
+async function aiLoop() {
+    webcam.update();
+    await aiPredict();
+    window.requestAnimationFrame(aiLoop);
+}
+
+async function aiPredict() {
+    const prediction = await aiModel.predict(webcam.canvas);
+    for (let i = 0; i < maxPredictions; i++) {
+        const classTitle = prediction[i].className === "Class 1" ? "강아지" : 
+                           prediction[i].className === "Class 2" ? "고양이" : prediction[i].className;
+        const probability = (prediction[i].probability * 100).toFixed(0);
+        
+        const barContainer = labelContainer.childNodes[i];
+        const bar = barContainer.querySelector(".prediction-bar");
+        const label = barContainer.querySelector(".prediction-label");
+        
+        bar.style.width = probability + "%";
+        label.innerHTML = `${classTitle}: ${probability}%`;
+        
+        // 색상 동적 변경 (확률에 따라)
+        if (probability > 50) {
+            bar.style.background = "var(--accent-color)";
+        } else {
+            bar.style.background = "rgba(255, 255, 255, 0.3)";
+        }
+    }
+}

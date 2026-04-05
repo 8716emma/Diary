@@ -3,27 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>돌림판 웹</title>
+    <title>AI 동물상 테스트 & 돌림판</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
     <div class="theme-toggle">
         <button id="themeBtn">🌓 테마 변경</button>
     </div>
     <div class="container">
-        <h1>돌림판</h1>
-        <div class="wheel-container">
-            <canvas id="wheelCanvas" width="500" height="500"></canvas>
-            <div class="pointer"></div>
-        </div>
-        <div class="controls">
-            <input type="text" id="optionInput" placeholder="옵션을 추가하세요">
-            <button id="addOptionBtn">추가</button>
-            <button id="spinBtn">돌리기</button>
-        </div>
-        <div id="result"></div>
+        <section class="wheel-section">
+            <h1>돌림판</h1>
+            <div class="wheel-container">
+                <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                <div class="pointer"></div>
+            </div>
+            <div class="controls">
+                <input type="text" id="optionInput" placeholder="옵션을 추가하세요">
+                <button id="addOptionBtn">추가</button>
+                <button id="spinBtn">돌리기</button>
+            </div>
+            <div id="result"></div>
+        </section>
+
+        <section class="ai-section">
+            <hr>
+            <h2>AI 동물상 테스트</h2>
+            <p>카메라를 허용하고 당신이 강아지상인지 고양이상인지 확인해보세요!</p>
+            <button type="button" id="startAiBtn" onclick="initAI()">테스트 시작하기</button>
+            <div id="loading-spinner" class="hidden">모델 로딩 중...</div>
+            <div class="ai-content">
+                <div id="webcam-container"></div>
+                <div id="label-container"></div>
+            </div>
+        </section>
         
-        <div class="contact-section">
+        <section class="contact-section">
             <hr>
             <h3>제휴 문의</h3>
             <form action="https://formspree.io/f/xqegggoe" method="POST" id="contactForm">
@@ -38,7 +54,7 @@
                 </div>
                 <button type="submit" id="submitBtn">문의하기</button>
             </form>
-        </div>
+        </section>
     </div>
     <script src="main.js"></script>
 </body>
