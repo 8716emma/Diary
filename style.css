@@ -9,6 +9,7 @@
     --accent-color: #ff4757;
     --accent-hover: #ff6b81;
     --glow-color: rgba(255, 255, 255, 0.1);
+    --nav-bg: rgba(0, 0, 0, 0.8);
 }
 
 .light-mode {
@@ -20,79 +21,137 @@
     --input-border: rgba(0, 0, 0, 0.1);
     --shadow-color: rgba(0, 0, 0, 0.1);
     --glow-color: rgba(0, 0, 0, 0.05);
+    --nav-bg: rgba(255, 255, 255, 0.9);
 }
 
 body {
     font-family: 'Pretendard', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     margin: 0;
+    padding: 0;
+    height: 100vh;
     overflow: hidden;
     background-image: radial-gradient(circle at center, var(--glow-color) 0%, transparent 60%);
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.container {
-    text-align: center;
-    padding: 2rem;
-    background: var(--container-bg);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px var(--shadow-color), 0 0 100px var(--glow-color);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--container-border);
-    transition: all 0.3s ease;
+#app {
+    height: calc(100vh - 70px);
+    width: 100%;
+    position: relative;
 }
 
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.page.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Theme Toggle */
 .theme-toggle {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 100;
+    z-index: 1000;
 }
 
 #themeBtn {
     background: var(--container-bg);
     border: 1px solid var(--container-border);
     color: var(--text-color);
-    padding: 0.5rem 1rem;
-    border-radius: 30px;
+    padding: 10px;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
     cursor: pointer;
     backdrop-filter: blur(5px);
-    font-weight: 500;
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 8px;
+    font-size: 1.2rem;
     transition: all 0.3s ease;
 }
 
-#themeBtn:hover {
-    transform: scale(1.05);
-    background: var(--accent-color);
-    color: white;
+/* Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid var(--container-border);
+    z-index: 1000;
 }
 
-h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    text-shadow: 0 0 15px var(--glow-color);
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: none;
+}
+
+.nav-item.active {
+    opacity: 1;
+    color: var(--accent-color);
+    transform: translateY(-5px);
+}
+
+.nav-item .icon {
+    font-size: 1.5rem;
+}
+
+.nav-item .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Specific Content Scaling */
+h1, h2, h3 {
+    margin-top: 0;
 }
 
 .wheel-container {
     position: relative;
-    width: 500px;
-    height: 500px;
-    margin: 0 auto 2rem;
+    width: 400px;
+    height: 400px;
+    margin-bottom: 20px;
 }
 
 #wheelCanvas {
-    transition: transform 10s cubic-bezier(0.25, 1, 0.5, 1);
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    box-shadow: 0 0 50px rgba(255, 107, 107, 0.3), 0 0 100px rgba(255, 165, 0, 0.2);
+    box-shadow: 0 0 50px var(--glow-color);
 }
 
 .pointer {
@@ -102,173 +161,89 @@ h1 {
     transform: translate(-50%, -100%);
     width: 0;
     height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-top: 50px solid var(--accent-color);
-    filter: drop-shadow(0 0 10px var(--accent-color));
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 40px solid var(--accent-color);
     z-index: 10;
 }
 
 .controls {
-    margin-bottom: 2rem;
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 input[type="text"] {
     background: var(--input-bg);
     border: 1px solid var(--input-border);
     border-radius: 10px;
-    padding: 0.8rem 1.2rem;
+    padding: 10px 15px;
     color: var(--text-color);
-    font-size: 1rem;
-    box-shadow: inset 0 2px 10px var(--shadow-color);
-    transition: all 0.3s ease;
-}
-
-input[type="text"]:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 15px var(--accent-color);
 }
 
 button {
     background: var(--accent-color);
-    color: #fff;
+    color: white;
     border: none;
-    padding: 0.8rem 1.5rem;
+    padding: 10px 20px;
     border-radius: 10px;
-    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+    transition: 0.3s;
 }
 
 button:hover {
-    background: var(--accent-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.6);
-}
-
-button:active {
-    transform: translateY(0);
-}
-
-.contact-section {
-    margin-top: 3rem;
-    padding-top: 1rem;
-}
-
-.contact-section hr {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, transparent, var(--container-border), transparent);
-    margin-bottom: 2rem;
-}
-
-.contact-section h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    color: var(--text-color);
+    transform: scale(1.05);
 }
 
 #contactForm {
+    width: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    max-width: 400px;
-    margin: 0 auto;
+    gap: 15px;
 }
 
 .form-group input, .form-group textarea {
     width: 100%;
     background: var(--input-bg);
     border: 1px solid var(--input-border);
+    padding: 12px;
     border-radius: 10px;
-    padding: 0.8rem 1.2rem;
     color: var(--text-color);
-    font-size: 1rem;
-    box-shadow: inset 0 2px 10px var(--shadow-color);
-    transition: all 0.3s ease;
     box-sizing: border-box;
 }
 
 .form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.form-group input:focus, .form-group textarea:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 15px var(--accent-color);
-}
-
-/* ... existing styles ... */
-
-.ai-section {
-    margin-top: 3rem;
-}
-
-.ai-section hr {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, transparent, var(--container-border), transparent);
-    margin-bottom: 2rem;
-}
-
-.ai-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.ai-section p {
-    margin-bottom: 1.5rem;
-    opacity: 0.8;
-}
-
-#startAiBtn {
-    margin-bottom: 2rem;
-    background: #4cd137;
-    box-shadow: 0 5px 15px rgba(76, 209, 55, 0.4);
-}
-
-#startAiBtn:hover {
-    background: #44bd32;
-    box-shadow: 0 8px 20px rgba(76, 209, 55, 0.6);
+    height: 100px;
 }
 
 .ai-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 20px;
 }
 
 #webcam-container {
+    border: 4px solid var(--accent-color);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 30px var(--shadow-color);
-    border: 3px solid var(--accent-color);
 }
 
 #label-container {
-    width: 100%;
-    max-width: 400px;
+    width: 300px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 10px;
 }
 
 .prediction-bar-container {
     background: var(--input-bg);
-    border-radius: 10px;
-    overflow: hidden;
     height: 30px;
+    border-radius: 15px;
+    overflow: hidden;
     position: relative;
-    border: 1px solid var(--input-border);
 }
 
 .prediction-bar {
@@ -279,28 +254,11 @@ button:active {
 
 .prediction-label {
     position: absolute;
+    left: 15px;
     top: 50%;
-    left: 10px;
     transform: translateY(-50%);
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #fff;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    font-size: 0.8rem;
+    font-weight: bold;
 }
 
-#loading-spinner {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 2rem;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
-}
-
-.hidden {
-    display: none;
-}
+.hidden { display: none; }

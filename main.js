@@ -1,12 +1,5 @@
-const canvas = document.getElementById('wheelCanvas');
-const ctx = canvas.getContext('2d');
-const optionInput = document.getElementById('optionInput');
-const addOptionBtn = document.getElementById('addOptionBtn');
-const spinBtn = document.getElementById('spinBtn');
-const resultDiv = document.getElementById('result');
-const themeBtn = document.getElementById('themeBtn');
-
 // 테마 관리
+const themeBtn = document.getElementById('themeBtn');
 const currentTheme = localStorage.getItem('theme');
 if (currentTheme) {
     document.body.classList.toggle('light-mode', currentTheme === 'light');
@@ -19,7 +12,37 @@ themeBtn.addEventListener('click', () => {
     drawWheel(); 
 });
 
+// --- 페이지 전환 로직 ---
+function showPage(pageId) {
+    // 모든 페이지 숨기기
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    // 선택한 페이지 표시
+    document.getElementById(pageId).classList.add('active');
+
+    // 네비게이션 아이템 활성화 상태 변경
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('onclick').includes(pageId)) {
+            item.classList.add('active');
+        }
+    });
+
+    // 페이지별 추가 작업 (예: 돌림판 다시 그리기)
+    if (pageId === 'wheelPage') {
+        drawWheel();
+    }
+}
+window.showPage = showPage; // 전역 함수로 등록
+
 // --- 돌림판 로직 ---
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas.getContext('2d');
+const optionInput = document.getElementById('optionInput');
+const addOptionBtn = document.getElementById('addOptionBtn');
+const spinBtn = document.getElementById('spinBtn');
+const resultDiv = document.getElementById('result');
 let options = ['옵션 1', '옵션 2', '옵션 3', '옵션 4', '옵션 5', '옵션 6'];
 let startAngle = 0;
 let arc = Math.PI / (options.length / 2);
