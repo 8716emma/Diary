@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>달빛 일기장</title>
+    <meta name="description" content="달빛 아래 감성을 기록하는 달빛 일기장. 오늘의 감정을 달 모양으로 기록하고 나만의 소중한 추억을 관리해보세요.">
+    <meta name="keywords" content="일기장, 온라인 일기, 감정 기록, 달빛 일기, 무료 일기장, HAPPY.LAB">
+    <title>달빛 일기장 - 감성적인 오늘의 기록 | HAPPY.LAB</title>
     <!-- 부드러운 폰트: 고운 돋움 적용 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,6 +48,56 @@
             --star-color: #a67c52;
         }
 
+        /* 네비게이션 스타일 */
+        nav.gnb {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        nav.gnb ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+        nav.gnb a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav.gnb a:hover { color: var(--accent); }
+
+        footer {
+            margin-top: 50px;
+            padding: 40px 20px;
+            background: rgba(0,0,0,0.2);
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        footer a { color: var(--text-muted); text-decoration: none; margin: 0 10px; }
+        footer a:hover { text-decoration: underline; color: var(--accent); }
+
+        /* 정보 섹션 스타일 */
+        .info-section {
+            margin-top: 3rem;
+            line-height: 1.8;
+            color: var(--text-main);
+        }
+        .info-section h2 { color: var(--accent); margin-bottom: 1.5rem; text-align: left; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
+        .info-section p { margin-bottom: 1rem; font-size: 0.95rem; text-align: left; }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -64,6 +116,7 @@
             align-items: flex-start;
             overflow-x: hidden;
             position: relative;
+            padding-top: 60px;
         }
 
         /* 배경에 깐 짙은 그라데이션 */
@@ -96,9 +149,7 @@
             animation: twinkle infinite alternate;
         }
 
-        [data-theme="light"] .star {
-            opacity: 0.3;
-        }
+        [data-theme="light"] .star { opacity: 0.3; }
 
         @keyframes twinkle {
             0% { opacity: 0.1; transform: scale(0.8); }
@@ -108,7 +159,7 @@
         /* 달 */
         .moon {
             position: absolute;
-            top: 60px;
+            top: 100px;
             right: 15%;
             width: 90px;
             height: 90px;
@@ -149,7 +200,7 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
-            padding-top: 120px;
+            padding-top: 80px;
             padding-bottom: 60px;
         }
 
@@ -175,356 +226,73 @@
             text-shadow: 0 2px 10px rgba(255,255,255,0.05);
         }
 
-        /* 달력 (Calendar) 스타일 */
-        .calendar {
-            margin-bottom: 2rem;
-            padding: 1.2rem;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            border: 1px solid var(--glass-border);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-        }
+        .calendar { margin-bottom: 2rem; padding: 1.2rem; background: rgba(0, 0, 0, 0.1); border-radius: 15px; border: 1px solid var(--glass-border); box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; font-size: 1.1rem; font-weight: bold; color: var(--text-main); letter-spacing: 1px; }
+        .calendar-header button { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 50%; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s ease; }
+        .calendar-header button:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .calendar-days-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+        .calendar-date { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4px; height: 55px; cursor: pointer; border-radius: 12px; transition: all 0.3s ease; font-size: 0.95rem; position: relative; border: 1px solid transparent; }
+        .calendar-date:hover { background: var(--glass-bg); }
+        .calendar-date.selected { background: rgba(197, 168, 128, 0.1); border: 1px solid var(--accent); box-shadow: inset 0 0 10px rgba(197, 168, 128, 0.1); }
+        span.date-num { display: flex; justify-content: center; align-items: center; width: 26px; height: 26px; border-radius: 50%; }
+        .calendar-date.today span.date-num { background: var(--accent); font-weight: bold; color: #fff; box-shadow: 0 0 8px rgba(197, 168, 128, 0.3); }
+        .calendar-date.selected span.date-num { color: var(--accent); font-weight: bold; }
+        .calendar-date.other-month { opacity: 0.3; }
+        .date-emotion { font-size: 0.85rem; margin-top: 2px; height: 18px; line-height: 18px; }
 
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.2rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--text-main);
-            letter-spacing: 1px;
-        }
+        .editor-section { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .editor-header { text-align: center; margin-bottom: 1.5rem; color: var(--text-main); border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
+        .editor-header h2 { font-size: 1.1rem; font-weight: bold; letter-spacing: 1px; color: var(--accent); }
+        .emotion-section { margin-bottom: 1.5rem; }
+        .emotion-section p { text-align: center; margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem; }
+        .emotions { display: flex; justify-content: space-evenly; background: rgba(0,0,0,0.1); border-radius: 40px; padding: 8px; border: 1px solid var(--glass-border); }
+        .emotion-btn { background: transparent; border: none; font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease; filter: grayscale(100%); opacity: 0.4; padding: 8px; border-radius: 50%; }
+        .emotion-btn:hover { transform: scale(1.15); filter: grayscale(20%); opacity: 0.8; }
+        .emotion-btn.selected { transform: scale(1.25); filter: grayscale(0%); opacity: 1; background: var(--glass-bg); box-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        .diary-input { width: 100%; min-height: 180px; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.2rem; color: var(--text-main); font-family: inherit; font-size: 0.95rem; line-height: 1.8; resize: vertical; transition: all 0.3s ease; }
+        .diary-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px rgba(197, 168, 128, 0.15); background: var(--glass-bg); }
+        .diary-input::placeholder { color: var(--text-muted); opacity: 0.5; }
+        .button-row { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        button { padding: 0.8rem; background: transparent; font-family: inherit; font-size: 1rem; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; }
+        button.save-btn { flex-grow: 1; border: 1px solid var(--accent); color: var(--accent); }
+        button.save-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px rgba(197, 168, 128, 0.3); font-weight: bold; }
+        button.delete-btn { width: 30%; border: 1px solid #e06c75; color: #e06c75; display: none; }
+        button.delete-btn:hover { background: #e06c75; color: #fff; box-shadow: 0 0 15px rgba(224, 108, 117, 0.3); font-weight: bold; }
 
-        .calendar-header button {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+        .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+        .contact-form label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; display: block; padding-left: 0.5rem; }
+        .contact-form input, .contact-form textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 0.9rem; color: var(--text-main); font-family: inherit; font-size: 0.95rem; transition: all 0.3s ease; }
+        .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px rgba(197, 168, 128, 0.15); background: var(--glass-bg); }
+        .contact-form button[type="submit"] { width: 100%; margin-top: 0.5rem; border: 1px solid var(--accent); color: var(--accent); padding: 0.8rem; background: transparent; font-family: inherit; font-size: 1rem; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; }
+        .contact-form button[type="submit"]:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px rgba(197, 168, 128, 0.3); font-weight: bold; }
 
-        .calendar-header button:hover {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
-        .calendar-days-row {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            text-align: center;
-        }
-
-        .calendar-date {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 4px;
-            height: 55px; /* aspect-ratio 이슈 방지를 위해 고정 높이 지정 */
-            cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            position: relative;
-            border: 1px solid transparent;
-        }
-
-        .calendar-date:hover {
-            background: var(--glass-bg);
-        }
-
-        .calendar-date.selected {
-            background: rgba(197, 168, 128, 0.1);
-            border: 1px solid var(--accent);
-            box-shadow: inset 0 0 10px rgba(197, 168, 128, 0.1);
-        }
-
-        span.date-num {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-        }
-
-        .calendar-date.today span.date-num {
-            background: var(--accent);
-            font-weight: bold;
-            color: #fff;
-            box-shadow: 0 0 8px rgba(197, 168, 128, 0.3);
-        }
-
-        .calendar-date.selected span.date-num {
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .calendar-date.other-month {
-            opacity: 0.3;
-        }
-
-        .date-emotion {
-            font-size: 0.85rem;
-            margin-top: 2px;
-            height: 18px;
-            line-height: 18px;
-        }
-
-        /* 기록 영역 (Editor) */
-        .editor-section {
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .editor-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            color: var(--text-main);
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 1rem;
-        }
-
-        .editor-header h2 {
-            font-size: 1.1rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            color: var(--accent);
-        }
-
-        /* 감정 선택 영역 */
-        .emotion-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .emotion-section p {
-            text-align: center;
-            margin-bottom: 1rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .emotions {
-            display: flex;
-            justify-content: space-evenly;
-            background: rgba(0,0,0,0.1);
-            border-radius: 40px;
-            padding: 8px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .emotion-btn {
-            background: transparent;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            filter: grayscale(100%);
-            opacity: 0.4;
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .emotion-btn:hover {
-            transform: scale(1.15);
-            filter: grayscale(20%);
-            opacity: 0.8;
-        }
-
-        .emotion-btn.selected {
-            transform: scale(1.25);
-            filter: grayscale(0%);
-            opacity: 1;
-            background: var(--glass-bg);
-            box-shadow: 0 0 15px rgba(255,255,255,0.1);
-        }
-
-        /* 텍스트 입력 영역 */
-        .diary-input {
-            width: 100%;
-            min-height: 180px;
-            background: var(--input-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 1.2rem;
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 0.95rem;
-            line-height: 1.8;
-            resize: vertical;
-            transition: all 0.3s ease;
-        }
-
-        .diary-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(197, 168, 128, 0.15);
-            background: var(--glass-bg);
-        }
-
-        .diary-input::placeholder {
-            color: var(--text-muted);
-            opacity: 0.5;
-        }
-
-        /* 하단 버튼들 */
-        .button-row {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        button {
-            padding: 0.8rem;
-            background: transparent;
-            font-family: inherit;
-            font-size: 1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
-        }
-
-        button.save-btn {
-            flex-grow: 1;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-        }
-
-        button.save-btn:hover {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(197, 168, 128, 0.3);
-            font-weight: bold;
-        }
-
-        button.delete-btn {
-            width: 30%;
-            border: 1px solid #e06c75;
-            color: #e06c75;
-            display: none; /* 데이터가 있을 때만 보이도록 설정 */
-        }
-
-        button.delete-btn:hover {
-            background: #e06c75;
-            color: #fff;
-            box-shadow: 0 0 15px rgba(224, 108, 117, 0.3);
-            font-weight: bold;
-        }
-
-        /* 제휴 문의 폼 스타일 */
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .contact-form label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-            display: block;
-            padding-left: 0.5rem;
-        }
-
-        .contact-form input, 
-        .contact-form textarea {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 0.9rem;
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .contact-form input:focus, 
-        .contact-form textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(197, 168, 128, 0.15);
-            background: var(--glass-bg);
-        }
-
-        .contact-form button[type="submit"] {
-            width: 100%;
-            margin-top: 0.5rem;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 0.8rem;
-            background: transparent;
-            font-family: inherit;
-            font-size: 1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
-        }
-
-        .contact-form button[type="submit"]:hover {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(197, 168, 128, 0.3);
-            font-weight: bold;
-        }
-
-        /* 테마 토글 버튼 전용 스타일 */
-        .theme-toggle-btn {
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 0.9rem;
-            background: var(--glass-bg);
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(5px);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .theme-toggle-btn { color: var(--text-main); text-decoration: none; font-size: 0.9rem; background: var(--glass-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(5px); cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
         @media (max-width: 480px) {
             .glass-panel { padding: 1.5rem; }
-            .moon { width: 70px; height: 70px; top: 40px; right: 20px; }
-            .container { padding-top: 100px; }
+            .moon { width: 70px; height: 70px; top: 80px; right: 20px; }
+            .container { padding-top: 60px; }
             h1 { font-size: 1.4rem; }
             .emotion-btn { font-size: 1.3rem; }
             .calendar-date { font-size: 0.85rem; padding: 4px 0; }
         }
     </style>
 </head>
-<body>
+<body class="dark-mode">
+    <nav class="gnb">
+        <ul>
+            <li><a href="index.html">달빛 일기장</a></li>
+            <li><a href="index1.html">돌림판 & AI 테스트</a></li>
+            <li><a href="privacy.html">개인정보처리방침</a></li>
+        </ul>
+    </nav>
 
     <div class="stars" id="stars"></div>
     <div class="moon"></div>
 
-    <div style="position: fixed; top: 20px; left: 20px; z-index: 100; display: flex; gap: 10px;">
+    <div style="position: fixed; top: 80px; left: 20px; z-index: 100; display: flex; gap: 10px;">
         <a href="#contact-section" style="color: var(--text-main); text-decoration: none; font-size: 0.9rem; background: var(--glass-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(5px);">제휴 문의</a>
         <button id="theme-toggle" class="theme-toggle-btn">
             <span id="theme-icon">🌙</span>
@@ -536,7 +304,6 @@
         <div class="glass-panel">
             <h1>달빛 아래, 나의 기록</h1>
             
-            <!-- 달력 영역 -->
             <div class="calendar">
                 <div class="calendar-header">
                     <button id="prev-month">◀</button>
@@ -546,17 +313,13 @@
                 <div class="calendar-days-row">
                     <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
                 </div>
-                <div class="calendar-grid" id="calendar-grid">
-                    <!-- 날짜들이 여기에 렌더링됩니다 -->
-                </div>
+                <div class="calendar-grid" id="calendar-grid"></div>
             </div>
 
-            <!-- 편집 영역 -->
             <div class="editor-section">
                 <div class="editor-header">
                     <h2 id="selected-date-text"></h2>
                 </div>
-
                 <div class="emotion-section">
                     <p>이 날의 당신은 어떤 달이었나요?</p>
                     <div class="emotions" id="emotion-selector">
@@ -567,18 +330,14 @@
                         <button class="emotion-btn" data-emotion="🌑" title="우울하고 어두움">🌑</button>
                     </div>
                 </div>
-
                 <textarea id="diary-text" class="diary-input" placeholder="스쳐가는 생각과 감정들을 적어보세요..."></textarea>
-                
                 <div class="button-row">
                     <button class="delete-btn" id="delete-btn">지우기</button>
                     <button class="save-btn" id="save-btn">기록 남기기</button>
                 </div>
             </div>
-
         </div>
 
-        <!-- 제휴 문의 영역 -->
         <div class="glass-panel" id="contact-section">
             <h1>제휴 문의</h1>
             <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6;">
@@ -597,28 +356,39 @@
             </form>
         </div>
 
+        <!-- 애드센스 승인을 위한 정보 섹션 -->
+        <div class="glass-panel info-section">
+            <h2>🌙 달빛 일기장: 감정 기록의 가치</h2>
+            <p>우리는 매일 수많은 감정을 느끼며 살아갑니다. 하지만 바쁜 일상 속에서 그 감정들은 금방 휘발되어 버리곤 합니다. 달빛 일기장은 여러분의 소중한 감정의 변화를 달의 위상 변화에 담아 시각적으로 기록할 수 있도록 돕습니다.</p>
+            <p><strong>왜 감정을 기록해야 할까요?</strong> 심리학적으로 자신의 감정을 객관적으로 기록하는 '감정 레이블링'은 스트레스 감소와 자기 객관화에 큰 도움을 줍니다. 보름달부터 초승달까지, 오늘의 마음 상태를 선택하고 짧은 기록을 남기는 습관을 통해 내면의 평화를 찾아보세요.</p>
+            <p>본 서비스는 별도의 서버 저장 없이 사용자의 기기(브라우저)에만 데이터를 안전하게 저장하므로 개인정보 유출 걱정 없이 안심하고 이용하실 수 있습니다.</p>
+        </div>
     </div>
 
+    <footer>
+        <p>© 2026 HAPPY.LAB. All rights reserved.</p>
+        <p>
+            <a href="index.html">달빛 일기장</a> | 
+            <a href="index1.html">돌림판 & AI 테스트</a> | 
+            <a href="privacy.html">개인정보처리방침</a>
+        </p>
+    </footer>
+
     <script>
-        // 전역 상태
         let currentDate = new Date();
         let selectedDate = new Date();
         let entries = {};
         let selectedEmotion = null;
 
-        // 초기화
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             createStars();
             loadEntriesFromStorage();
             renderCalendar();
             loadEditorForSelectedDate();
-
-            // 이벤트 리스너 등록
             initEventListeners();
         });
 
-        // 테마 초기화
         function initTheme() {
             const savedTheme = localStorage.getItem('moonlight_theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
@@ -628,13 +398,8 @@
         function updateThemeUI(theme) {
             const icon = document.getElementById('theme-icon');
             const text = document.getElementById('theme-text');
-            if (theme === 'light') {
-                icon.innerText = '☀️';
-                text.innerText = '화이트 모드';
-            } else {
-                icon.innerText = '🌙';
-                text.innerText = '블랙 모드';
-            }
+            if (theme === 'light') { icon.innerText = '☀️'; text.innerText = '화이트 모드'; }
+            else { icon.innerText = '🌙'; text.innerText = '블랙 모드'; }
         }
 
         function toggleTheme() {
@@ -645,253 +410,107 @@
             updateThemeUI(newTheme);
         }
 
-        // 별 배경 생성
         function createStars() {
             const starsContainer = document.getElementById('stars');
-            const numStars = 100;
-
-            for (let i = 0; i < numStars; i++) {
+            for (let i = 0; i < 100; i++) {
                 const star = document.createElement('div');
                 star.classList.add('star');
-                
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                const size = Math.random() * 2 + 0.5;
-                const duration = Math.random() * 3 + 2;
-                const delay = Math.random() * 5;
-
-                star.style.left = `${x}%`;
-                star.style.top = `${y}%`;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.animationDuration = `${duration}s`;
-                star.style.animationDelay = `${delay}s`;
-
-                if (Math.random() > 0.8) {
-                    star.style.opacity = '0.7';
-                    star.style.boxShadow = '0 0 4px #fff';
-                }
-
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 2 + 0.5}px`;
+                star.style.height = star.style.width;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
                 starsContainer.appendChild(star);
             }
         }
 
-        // 로컬 스토리지에서 기록 불러오기
         function loadEntriesFromStorage() {
             let raw = localStorage.getItem('moonlight_diaries_v2');
-            if (raw) {
-                entries = JSON.parse(raw);
-            } else {
-                // 이전 버전(배열 형태) 데이터가 있다면 마이그레이션
-                let old = JSON.parse(localStorage.getItem('moonlight_diaries'));
-                if (Array.isArray(old)) {
-                    old.forEach(e => {
-                        const d = new Date(e.date || Date.now());
-                        entries[formatDateKey(d)] = {
-                            emotion: e.emotion,
-                            text: e.text,
-                            updatedAt: e.date
-                        };
-                    });
-                    saveEntriesToStorage();
-                }
-            }
+            if (raw) entries = JSON.parse(raw);
         }
 
-        function saveEntriesToStorage() {
-            localStorage.setItem('moonlight_diaries_v2', JSON.stringify(entries));
-        }
-
-        function formatDateKey(dateObj) {
-            const y = dateObj.getFullYear();
-            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const d = String(dateObj.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
-        }
+        function saveEntriesToStorage() { localStorage.setItem('moonlight_diaries_v2', JSON.stringify(entries)); }
+        function formatDateKey(dateObj) { return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`; }
 
         function renderCalendar() {
             const monthYear = document.getElementById('calendar-month-year');
             const grid = document.getElementById('calendar-grid');
-            
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
-
             monthYear.innerText = `${year}년 ${month + 1}월`;
             grid.innerHTML = '';
-
-            const firstDayIndex = new Date(year, month, 1).getDay(); // 일요일 0
+            const firstDay = new Date(year, month, 1).getDay();
             const lastDay = new Date(year, month + 1, 0).getDate();
-            const prevMonthLastDay = new Date(year, month, 0).getDate();
-
-            // 이전 달 날짜들
-            for (let i = firstDayIndex; i > 0; i--) {
-                const d = prevMonthLastDay - i + 1;
-                const cell = createDateCell(new Date(year, month - 1, d), true);
-                grid.appendChild(cell);
-            }
-
-            // 현재 달 날짜들
-            for (let i = 1; i <= lastDay; i++) {
-                const cell = createDateCell(new Date(year, month, i), false);
-                grid.appendChild(cell);
-            }
-
-            // 다음 달 날짜들 (총 42칸을 채우기 위해)
-            const totalCells = grid.children.length;
-            for (let i = 1; i <= 42 - totalCells; i++) {
-                const cell = createDateCell(new Date(year, month + 1, i), true);
-                grid.appendChild(cell);
-            }
+            const prevLastDay = new Date(year, month, 0).getDate();
+            for (let i = firstDay; i > 0; i--) grid.appendChild(createDateCell(new Date(year, month - 1, prevLastDay - i + 1), true));
+            for (let i = 1; i <= lastDay; i++) grid.appendChild(createDateCell(new Date(year, month, i), false));
+            const total = grid.children.length;
+            for (let i = 1; i <= 42 - total; i++) grid.appendChild(createDateCell(new Date(year, month + 1, i), true));
         }
 
-        function createDateCell(dateObj, isOtherMonth) {
+        function createDateCell(dateObj, isOther) {
             const div = document.createElement('div');
             div.classList.add('calendar-date');
-            if (isOtherMonth) div.classList.add('other-month');
-
+            if (isOther) div.classList.add('other-month');
             const today = new Date();
-            if (dateObj.getDate() === today.getDate() && 
-                dateObj.getMonth() === today.getMonth() && 
-                dateObj.getFullYear() === today.getFullYear()) {
-                div.classList.add('today');
-            }
-
-            if (dateObj.getDate() === selectedDate.getDate() && 
-                dateObj.getMonth() === selectedDate.getMonth() && 
-                dateObj.getFullYear() === selectedDate.getFullYear()) {
-                div.classList.add('selected');
-            }
-
-            const dayNum = document.createElement('span');
-            dayNum.classList.add('date-num');
-            dayNum.innerText = dateObj.getDate();
-            div.appendChild(dayNum);
-
-            const dateKey = formatDateKey(dateObj);
-            const emotionDiv = document.createElement('div');
-            emotionDiv.classList.add('date-emotion');
-            
-            if (entries[dateKey] && entries[dateKey].emotion) {
-                emotionDiv.innerText = entries[dateKey].emotion;
-            }
-            div.appendChild(emotionDiv);
-
+            if (dateObj.toDateString() === today.toDateString()) div.classList.add('today');
+            if (dateObj.toDateString() === selectedDate.toDateString()) div.classList.add('selected');
+            const num = document.createElement('span');
+            num.classList.add('date-num');
+            num.innerText = dateObj.getDate();
+            div.appendChild(num);
+            const emo = document.createElement('div');
+            emo.classList.add('date-emotion');
+            const key = formatDateKey(dateObj);
+            if (entries[key]) emo.innerText = entries[key].emotion;
+            div.appendChild(emo);
             div.addEventListener('click', () => {
                 selectedDate = new Date(dateObj);
-                if (isOtherMonth) {
-                    currentDate = new Date(dateObj);
-                    renderCalendar();
-                } else {
-                    renderCalendar();
-                }
+                if (isOther) currentDate = new Date(dateObj);
+                renderCalendar();
                 loadEditorForSelectedDate();
             });
-
             return div;
         }
 
         function loadEditorForSelectedDate() {
-            const title = document.getElementById('selected-date-text');
             const diaryText = document.getElementById('diary-text');
-            const emotionBtns = document.querySelectorAll('.emotion-btn');
-            const deleteBtn = document.getElementById('delete-btn');
-
-            title.innerText = `${selectedDate.getFullYear()}년 ${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`;
-
-            const dateKey = formatDateKey(selectedDate);
-            const entry = entries[dateKey];
-
-            // 폼 초기화
-            diaryText.value = '';
-            emotionBtns.forEach(b => b.classList.remove('selected'));
-            selectedEmotion = null;
-
-            if (entry) {
-                diaryText.value = entry.text || '';
-                if (entry.emotion) {
-                    selectedEmotion = entry.emotion;
-                    emotionBtns.forEach(b => {
-                        if(b.getAttribute('data-emotion') === entry.emotion) {
-                            b.classList.add('selected');
-                        }
-                    });
-                }
-                deleteBtn.style.display = 'block';
-            } else {
-                deleteBtn.style.display = 'none';
-            }
+            const btns = document.querySelectorAll('.emotion-btn');
+            document.getElementById('selected-date-text').innerText = `${selectedDate.getFullYear()}년 ${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`;
+            const entry = entries[formatDateKey(selectedDate)];
+            diaryText.value = entry ? entry.text : '';
+            btns.forEach(b => b.classList.remove('selected'));
+            selectedEmotion = entry ? entry.emotion : null;
+            if (selectedEmotion) btns.forEach(b => { if(b.dataset.emotion === selectedEmotion) b.classList.add('selected'); });
+            document.getElementById('delete-btn').style.display = entry ? 'block' : 'none';
         }
 
         function initEventListeners() {
-            const emotionBtns = document.querySelectorAll('.emotion-btn');
+            const btns = document.querySelectorAll('.emotion-btn');
             const saveBtn = document.getElementById('save-btn');
-            const diaryText = document.getElementById('diary-text');
             const deleteBtn = document.getElementById('delete-btn');
-            const themeToggle = document.getElementById('theme-toggle');
-
-            themeToggle.addEventListener('click', toggleTheme);
-
-            document.getElementById('prev-month').addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() - 1);
-                renderCalendar();
-            });
-
-            document.getElementById('next-month').addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() + 1);
-                renderCalendar();
-            });
-
-            emotionBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    emotionBtns.forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    selectedEmotion = btn.getAttribute('data-emotion');
-                });
-            });
-
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            document.getElementById('prev-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+            document.getElementById('next-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+            btns.forEach(btn => btn.addEventListener('click', () => { btns.forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); selectedEmotion = btn.dataset.emotion; }));
             saveBtn.addEventListener('click', () => {
-                const text = diaryText.value.trim();
-                
-                if (!selectedEmotion && text) {
-                    alert('오늘의 감정을 닮은 달을 먼저 선택해주세요.');
-                    return;
-                }
-                if (!text && !selectedEmotion) {
-                    alert('기록할 내용을 입력해주세요.');
-                    return;
-                }
-
-                const dateKey = formatDateKey(selectedDate);
-                entries[dateKey] = {
-                    emotion: selectedEmotion || '',
-                    text: text,
-                    updatedAt: new Date().toISOString()
-                };
-
+                const text = document.getElementById('diary-text').value.trim();
+                if (!selectedEmotion && text) { alert('감정 달을 선택해주세요.'); return; }
+                if (!text && !selectedEmotion) { alert('기록을 입력해주세요.'); return; }
+                entries[formatDateKey(selectedDate)] = { emotion: selectedEmotion || '', text: text, updatedAt: new Date().toISOString() };
                 saveEntriesToStorage();
-                renderCalendar(); 
-                
-                deleteBtn.style.display = 'block';
-
-                const originalText = saveBtn.innerText;
-                saveBtn.innerText = '저장되었습니다 ✨';
-                setTimeout(() => {
-                    saveBtn.innerText = originalText;
-                }, 2000);
+                renderCalendar();
+                loadEditorForSelectedDate();
+                const original = saveBtn.innerText;
+                saveBtn.innerText = '저장 완료 ✨';
+                setTimeout(() => saveBtn.innerText = original, 2000);
             });
-
             deleteBtn.addEventListener('click', () => {
-                if(confirm('이 날의 기록을 지우시겠습니까?')) {
-                    const dateKey = formatDateKey(selectedDate);
-                    delete entries[dateKey];
+                if (confirm('기록을 지우시겠습니까?')) {
+                    delete entries[formatDateKey(selectedDate)];
                     saveEntriesToStorage();
-                    
-                    diaryText.value = '';
-                    selectedEmotion = null;
-                    emotionBtns.forEach(b => b.classList.remove('selected'));
                     renderCalendar();
-                    
-                    deleteBtn.style.display = 'none';
+                    loadEditorForSelectedDate();
                 }
             });
         }

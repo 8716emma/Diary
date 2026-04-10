@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘의 즐거움 - 돌림판 & AI 동물상</title>
+    <meta name="description" content="결정 장애를 해결해주는 행운의 돌림판과 AI 동물상 테스트. HAPPY.LAB에서 재미있는 도구들을 무료로 이용해보세요.">
+    <meta name="keywords" content="돌림판, 랜덤 추첨, 동물상 테스트, AI 관상, 결정 도우미, HAPPY.LAB">
+    <title>돌림판 & AI 동물상 테스트 - 스마트한 즐거움 | HAPPY.LAB</title>
     <!-- Pretendard 폰트 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <!-- Google AdSense -->
@@ -28,6 +30,48 @@
             --glass-border: rgba(0, 0, 0, 0.05);
         }
 
+        /* 네비게이션 스타일 */
+        nav.gnb {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        nav.gnb ul { list-style: none; display: flex; gap: 25px; }
+        nav.gnb a { color: var(--text-color); text-decoration: none; font-size: 0.95rem; font-weight: 600; opacity: 0.8; transition: 0.3s; }
+        nav.gnb a:hover { opacity: 1; color: var(--accent-color); }
+
+        footer {
+            margin-top: 50px;
+            padding: 40px 20px;
+            background: rgba(0,0,0,0.3);
+            color: #94a3b8;
+            text-align: center;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        footer a { color: #94a3b8; text-decoration: none; margin: 0 10px; }
+        footer a:hover { color: var(--accent-color); }
+
+        /* 정보 섹션 스타일 */
+        .info-content {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            line-height: 1.7;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+        .info-content h3 { color: var(--accent-color); margin: 1.5rem 0 0.8rem; }
+        .info-content p { margin-bottom: 1rem; font-size: 0.95rem; }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -39,20 +83,19 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
-            overflow: hidden;
-            height: 100vh;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-top: 70px;
         }
 
         #app {
             display: flex;
             flex-direction: column;
-            height: 100%;
             max-width: 600px;
             margin: 0 auto;
             position: relative;
         }
 
-        /* --- 상단 바 --- */
         header {
             padding: 1.5rem;
             display: flex;
@@ -85,29 +128,12 @@
             justify-content: center;
         }
 
-        /* --- 메인 콘텐츠 영역 --- */
-        main {
-            flex: 1;
-            position: relative;
-            padding: 1rem;
-            overflow-y: auto;
-        }
+        main { flex: 1; padding: 1rem; }
 
-        .page {
-            display: none;
-            flex-direction: column;
-            gap: 1.5rem;
-            animation: fadeIn 0.4s ease-out;
-        }
+        .page { display: none; flex-direction: column; gap: 1.5rem; animation: fadeIn 0.4s ease-out; }
+        .page.active { display: flex; }
 
-        .page.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .glass-card {
             background: var(--panel-bg);
@@ -115,206 +141,50 @@
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 1.5rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        /* --- 돌림판 전용 스타일 --- */
-        .wheel-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-        }
+        .wheel-container { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+        #wheelCanvas { max-width: 100%; height: auto; filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3)); }
+        .input-group { display: flex; gap: 0.5rem; width: 100%; }
+        input[type="text"] { flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 0.75rem 1rem; border-radius: 12px; color: var(--text-color); outline: none; }
+        .primary-btn { background: var(--accent-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .primary-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .secondary-btn { background: rgba(255, 255, 255, 0.1); color: var(--text-color); border: 1px solid var(--glass-border); padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer; }
 
-        #wheelCanvas {
-            max-width: 100%;
-            height: auto;
-            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3));
-        }
+        #result { margin-top: 1rem; text-align: center; min-height: 80px; }
+        .result-badge { display: inline-block; padding: 0.25rem 0.75rem; background: var(--accent-color); color: white; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.5rem; font-weight: 800; }
 
-        .input-group {
-            display: flex;
-            gap: 0.5rem;
-            width: 100%;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            color: var(--text-color);
-            outline: none;
-        }
-
-        .primary-btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-        }
-
-        .primary-btn:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-        }
-
-        .secondary-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            border: 1px solid var(--glass-border);
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        #result {
-            margin-top: 1rem;
-            text-align: center;
-            min-height: 80px;
-        }
-
-        .result-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--accent-color);
-            color: white;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .result-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-        }
-
-        /* --- AI 테스트 전용 스타일 --- */
-        .ai-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .upload-area {
-            width: 100%;
-            height: 200px;
-            border: 2px dashed var(--glass-border);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .upload-area:hover {
-            background: rgba(56, 189, 248, 0.05);
-        }
-
-        #image-preview-container {
-            width: 100%;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-
-        #face-image {
-            width: 100%;
-            display: block;
-        }
-
-        .prediction-bar-container {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            height: 32px;
-            border-radius: 16px;
-            position: relative;
-            margin-bottom: 0.75rem;
-            overflow: hidden;
-        }
-
-        .prediction-bar {
-            height: 100%;
-            border-radius: 16px;
-            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .prediction-label {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: 600;
-            font-size: 0.875rem;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .ai-result-card {
-            margin-top: 1.5rem;
-            text-align: center;
-        }
-
+        .ai-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .upload-area { width: 100%; height: 200px; border: 2px dashed var(--glass-border); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
+        .upload-area:hover { background: rgba(56, 189, 248, 0.05); }
+        #image-preview-container { width: 100%; border-radius: 20px; overflow: hidden; margin-top: 1rem; }
+        #face-image { width: 100%; display: block; }
+        .prediction-bar-container { width: 100%; background: rgba(255, 255, 255, 0.1); height: 32px; border-radius: 16px; position: relative; margin-bottom: 0.75rem; overflow: hidden; }
+        .prediction-bar { height: 100%; border-radius: 16px; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .prediction-label { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-weight: 600; font-size: 0.875rem; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .ai-result-card { margin-top: 1.5rem; text-align: center; }
         .result-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
-        .result-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-top: 0.5rem; }
 
-        /* --- 하단 내비게이션 --- */
-        nav {
-            background: var(--panel-bg);
-            backdrop-filter: blur(16px);
-            border-top: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-around;
-            padding: 0.75rem 1rem 2rem;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.25rem;
-            color: var(--text-color);
-            opacity: 0.5;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            opacity: 1;
-            color: var(--accent-color);
-        }
-
+        nav.bottom-nav { background: var(--panel-bg); backdrop-filter: blur(16px); border-top: 1px solid var(--glass-border); display: flex; justify-content: space-around; padding: 0.75rem 1rem 1.5rem; margin-top: 2rem; border-radius: 20px 20px 0 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: var(--text-color); opacity: 0.5; text-decoration: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+        .nav-item.active { opacity: 1; color: var(--accent-color); }
         .nav-icon { font-size: 1.5rem; }
-
         .hidden { display: none; }
-        
-        /* 스피너 */
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-left-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body class="dark-mode">
+    <nav class="gnb">
+        <ul>
+            <li><a href="index.html">달빛 일기장</a></li>
+            <li><a href="index1.html">돌림판 & AI 테스트</a></li>
+            <li><a href="privacy.html">개인정보처리방침</a></li>
+        </ul>
+    </nav>
+
     <div id="app">
         <header>
             <div class="logo">HAPPY.LAB</div>
@@ -334,6 +204,12 @@
                         </div>
                         <button id="spinBtn" class="primary-btn" style="width: 100%; padding: 1rem;">행운의 돌림판 돌리기!</button>
                     </div>
+                </div>
+
+                <div class="info-content glass-card">
+                    <h3>🎡 랜덤 돌림판 활용 가이드</h3>
+                    <p>점심 메뉴 선택, 벌칙 정하기, 혹은 오늘의 할 일 순서를 정할 때 망설이고 계신가요? HAPPY.LAB의 행운의 돌림판은 여러분의 사소하지만 어려운 고민을 한 번에 해결해 드립니다.</p>
+                    <p>사용 방법은 간단합니다. 상단의 입력창에 옵션을 입력하고 '추가' 버튼을 누르세요. 최소 2개 이상의 옵션이 모이면 돌림판을 회전시킬 수 있습니다. 물리 엔진이 적용된 부드러운 애니메이션으로 공정한 결과를 확인해보세요!</p>
                 </div>
             </section>
 
@@ -360,14 +236,19 @@
                         </div>
 
                         <div id="label-container" style="width: 100%; margin-top: 1rem;"></div>
-                        
                         <div id="ai-result-message" class="ai-result-card hidden glass-card" style="width: 100%; background: rgba(255,255,255,0.05);"></div>
                     </div>
+                </div>
+
+                <div class="info-content glass-card">
+                    <h3>🐱 AI 동물상 테스트란?</h3>
+                    <p>Google의 Teachable Machine 기술을 활용한 딥러닝 모델이 수만 장의 데이터를 바탕으로 여러분의 외모 특징을 분석합니다. 강아지상, 고양이상 등 대중적인 동물상 분류를 통해 재미로 보는 관상을 확인해보세요.</p>
+                    <p>본 서비스는 사용자의 이미지를 서버로 전송하지 않으며, 모든 분석은 브라우저 내에서 안전하게 이루어집니다. 친구들과 결과를 공유하며 즐거운 시간을 보내보세요!</p>
                 </div>
             </section>
         </main>
 
-        <nav>
+        <nav class="bottom-nav">
             <div class="nav-item active" onclick="showPage('wheelPage')">
                 <span class="nav-icon">🎡</span>
                 <span>돌림판</span>
@@ -378,6 +259,15 @@
             </div>
         </nav>
     </div>
+
+    <footer>
+        <p>© 2026 HAPPY.LAB. All rights reserved.</p>
+        <p>
+            <a href="index.html">달빛 일기장</a> | 
+            <a href="index1.html">돌림판 & AI 테스트</a> | 
+            <a href="privacy.html">개인정보처리방침</a>
+        </p>
+    </footer>
 
     <!-- 스크립트 로드 -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
