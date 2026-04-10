@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>달빛 일기장</title>
+    <!-- 부드러운 폰트: 고운 돋움 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --moon-glow: rgba(255, 255, 200, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #e0e2e4;
+            --text-muted: #8b9298;
+            --accent: #c5a880;
+            --accent-hover: #dccaad;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Gowun Dodum', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 배경에 깐 짙은 그라데이션 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, #1f2335, #0b0c10 70%);
+            z-index: -2;
+        }
+
+        /* 별 배경 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: twinkle infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.1; transform: scale(0.8); }
+            100% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        /* 달 */
+        .moon {
+            position: absolute;
+            top: 60px;
+            right: 15%;
+            width: 90px;
+            height: 90px;
+            background: #fffbe6;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 40px var(--moon-glow),
+                0 0 80px var(--moon-glow),
+                inset -15px -15px 30px rgba(0,0,0,0.1);
+            z-index: 0;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .moon::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 12px;
+            width: 22px;
+            height: 22px;
+            background: rgba(0,0,0,0.04);
+            border-radius: 50%;
+            box-shadow: 30px 8px 0 -4px rgba(0,0,0,0.04),
+                        12px 30px 0 -6px rgba(0,0,0,0.04);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* 메인 컨테이너 */
+        .container {
+            width: 95%;
+            max-width: 500px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            padding-top: 120px;
+            padding-bottom: 60px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            text-align: center;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            color: #fdfdfd;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.1);
+        }
+
+        /* 달력 (Calendar) 스타일 */
+        .calendar {
+            margin-bottom: 2rem;
+            padding: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fdfdfd;
+            letter-spacing: 1px;
+        }
+
+        .calendar-header button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-header button:hover {
+            background: var(--accent);
+            color: var(--bg-color);
+            border-color: var(--accent);
+        }
+
+        .calendar-days-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+        }
+
+        .calendar-date {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4px;
+            height: 55px; /* aspect-ratio 이슈 방지를 위해 고정 높이 지정 */
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .calendar-date:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .calendar-date.selected {
+            background: rgba(197, 168, 128, 0.1);
+            border: 1px solid var(--accent);
+            box-shadow: inset 0 0 10px rgba(197, 168, 128, 0.15);
+        }
+
+        span.date-num {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+        }
+
+        .calendar-date.today span.date-num {
+            background: rgba(255,255,255,0.25);
+            font-weight: bold;
+            color: #fff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.2);
+        }
+
+        .calendar-date.selected span.date-num {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .calendar-date.other-month {
+            color: rgba(255,255,255,0.2);
+        }
+
+        .date-emotion {
+            font-size: 0.85rem;
+            margin-top: 2px;
+            height: 18px;
+            line-height: 18px;
+            filter: drop-shadow(0 0 3px rgba(255,255,255,0.4));
+        }
+
+        /* 기록 영역 (Editor) */
+        .editor-section {
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .editor-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #fdfdfd;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 1rem;
+        }
+
+        .editor-header h2 {
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: var(--accent);
+        }
+
+        /* 감정 선택 영역 */
+        .emotion-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .emotion-section p {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .emotions {
+            display: flex;
+            justify-content: space-evenly;
+            background: rgba(0,0,0,0.3);
+            border-radius: 40px;
+            padding: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .emotion-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: grayscale(100%);
+            opacity: 0.4;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .emotion-btn:hover {
+            transform: scale(1.15);
+            filter: grayscale(20%);
+            opacity: 0.8;
+        }
+
+        .emotion-btn.selected {
+            transform: scale(1.25);
+            filter: grayscale(0%);
+            opacity: 1;
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+
+        /* 텍스트 입력 영역 */
+        .diary-input {
+            width: 100%;
+            min-height: 180px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .diary-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(197, 168, 128, 0.15);
+            background: rgba(0,0,0,0.4);
+        }
+
+        .diary-input::placeholder {
+            color: #5a6168;
+        }
+
+        /* 하단 버튼들 */
+        .button-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            padding: 0.8rem;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        button.save-btn {
+            flex-grow: 1;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        button.save-btn:hover {
+            background: var(--accent);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(197, 168, 128, 0.3);
+            font-weight: bold;
+        }
+
+        button.delete-btn {
+            width: 30%;
+            border: 1px solid #e06c75;
+            color: #e06c75;
+            display: none; /* 데이터가 있을 때만 보이도록 설정 */
+        }
+
+        button.delete-btn:hover {
+            background: #e06c75;
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(224, 108, 117, 0.3);
+            font-weight: bold;
+        }
+
+        /* 제휴 문의 폼 스타일 */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-form label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            display: block;
+            padding-left: 0.5rem;
+        }
+
+        .contact-form input, 
+        .contact-form textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.9rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-form input:focus, 
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(197, 168, 128, 0.15);
+            background: rgba(0,0,0,0.4);
+        }
+
+        .contact-form button[type="submit"] {
+            width: 100%;
+            margin-top: 0.5rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.8rem;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .contact-form button[type="submit"]:hover {
+            background: var(--accent);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(197, 168, 128, 0.3);
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .glass-panel { padding: 1.5rem; }
+            .moon { width: 70px; height: 70px; top: 40px; right: 20px; }
+            .container { padding-top: 100px; }
+            h1 { font-size: 1.4rem; }
+            .emotion-btn { font-size: 1.3rem; }
+            .calendar-date { font-size: 0.85rem; padding: 4px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="stars"></div>
+    <div class="moon"></div>
+
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 100;">
+        <a href="#contact-section" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; background: var(--glass-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(5px);">제휴 문의</a>
+    </div>
+
+    <div class="container">
+        <div class="glass-panel">
+            <h1>달빛 아래, 나의 기록</h1>
+            
+            <!-- 달력 영역 -->
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button id="prev-month">◀</button>
+                    <span id="calendar-month-year"></span>
+                    <button id="next-month">▶</button>
+                </div>
+                <div class="calendar-days-row">
+                    <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+                </div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- 날짜들이 여기에 렌더링됩니다 -->
+                </div>
+            </div>
+
+            <!-- 편집 영역 -->
+            <div class="editor-section">
+                <div class="editor-header">
+                    <h2 id="selected-date-text"></h2>
+                </div>
+
+                <div class="emotion-section">
+                    <p>이 날의 당신은 어떤 달이었나요?</p>
+                    <div class="emotions" id="emotion-selector">
+                        <button class="emotion-btn" data-emotion="🌕" title="가득 찬 행복">🌕</button>
+                        <button class="emotion-btn" data-emotion="🌖" title="평온함">🌖</button>
+                        <button class="emotion-btn" data-emotion="🌗" title="보통의 날">🌗</button>
+                        <button class="emotion-btn" data-emotion="🌘" title="조금 지침">🌘</button>
+                        <button class="emotion-btn" data-emotion="🌑" title="우울하고 어두움">🌑</button>
+                    </div>
+                </div>
+
+                <textarea id="diary-text" class="diary-input" placeholder="스쳐가는 생각과 감정들을 적어보세요..."></textarea>
+                
+                <div class="button-row">
+                    <button class="delete-btn" id="delete-btn">지우기</button>
+                    <button class="save-btn" id="save-btn">기록 남기기</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 제휴 문의 영역 -->
+        <div class="glass-panel" id="contact-section">
+            <h1>제휴 문의</h1>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                달빛 일기장과 함께하고 싶은 제안이 있으신가요?<br>언제든 편하게 연락주세요.
+            </p>
+            <form action="https://formspree.io/f/xykbqnkr" method="POST" class="contact-form">
+                <div>
+                    <label for="email">답신 받을 이메일</label>
+                    <input type="email" name="email" id="email" placeholder="example@email.com" required>
+                </div>
+                <div>
+                    <label for="message">문의 내용</label>
+                    <textarea name="message" id="message" rows="5" placeholder="제휴 제안이나 문의 내용을 자유롭게 적어주세요..." required></textarea>
+                </div>
+                <button type="submit">문의 보내기</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        // 전역 상태
+        let currentDate = new Date();
+        let selectedDate = new Date();
+        let entries = {};
+        let selectedEmotion = null;
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            loadEntriesFromStorage();
+            renderCalendar();
+            loadEditorForSelectedDate();
+
+            // 이벤트 리스너 등록
+            initEventListeners();
+        });
+
+        // 별 배경 생성
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numStars = 100;
+
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const size = Math.random() * 2 + 0.5;
+                const duration = Math.random() * 3 + 2;
+                const delay = Math.random() * 5;
+
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `${delay}s`;
+
+                if (Math.random() > 0.8) {
+                    star.style.opacity = '0.7';
+                    star.style.boxShadow = '0 0 4px #fff';
+                }
+
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 로컬 스토리지에서 기록 불러오기
+        function loadEntriesFromStorage() {
+            let raw = localStorage.getItem('moonlight_diaries_v2');
+            if (raw) {
+                entries = JSON.parse(raw);
+            } else {
+                // 이전 버전(배열 형태) 데이터가 있다면 마이그레이션
+                let old = JSON.parse(localStorage.getItem('moonlight_diaries'));
+                if (Array.isArray(old)) {
+                    old.forEach(e => {
+                        const d = new Date(e.date || Date.now());
+                        entries[formatDateKey(d)] = {
+                            emotion: e.emotion,
+                            text: e.text,
+                            updatedAt: e.date
+                        };
+                    });
+                    saveEntriesToStorage();
+                }
+            }
+        }
+
+        function saveEntriesToStorage() {
+            localStorage.setItem('moonlight_diaries_v2', JSON.stringify(entries));
+        }
+
+        function formatDateKey(dateObj) {
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function renderCalendar() {
+            const monthYear = document.getElementById('calendar-month-year');
+            const grid = document.getElementById('calendar-grid');
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            monthYear.innerText = `${year}년 ${month + 1}월`;
+            grid.innerHTML = '';
+
+            const firstDayIndex = new Date(year, month, 1).getDay(); // 일요일 0
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+
+            // 이전 달 날짜들
+            for (let i = firstDayIndex; i > 0; i--) {
+                const d = prevMonthLastDay - i + 1;
+                const cell = createDateCell(new Date(year, month - 1, d), true);
+                grid.appendChild(cell);
+            }
+
+            // 현재 달 날짜들
+            for (let i = 1; i <= lastDay; i++) {
+                const cell = createDateCell(new Date(year, month, i), false);
+                grid.appendChild(cell);
+            }
+
+            // 다음 달 날짜들 (총 42칸을 채우기 위해)
+            const totalCells = grid.children.length;
+            for (let i = 1; i <= 42 - totalCells; i++) {
+                const cell = createDateCell(new Date(year, month + 1, i), true);
+                grid.appendChild(cell);
+            }
+        }
+
+        function createDateCell(dateObj, isOtherMonth) {
+            const div = document.createElement('div');
+            div.classList.add('calendar-date');
+            if (isOtherMonth) div.classList.add('other-month');
+
+            const today = new Date();
+            if (dateObj.getDate() === today.getDate() && 
+                dateObj.getMonth() === today.getMonth() && 
+                dateObj.getFullYear() === today.getFullYear()) {
+                div.classList.add('today');
+            }
+
+            if (dateObj.getDate() === selectedDate.getDate() && 
+                dateObj.getMonth() === selectedDate.getMonth() && 
+                dateObj.getFullYear() === selectedDate.getFullYear()) {
+                div.classList.add('selected');
+            }
+
+            const dayNum = document.createElement('span');
+            dayNum.classList.add('date-num');
+            dayNum.innerText = dateObj.getDate();
+            div.appendChild(dayNum);
+
+            const dateKey = formatDateKey(dateObj);
+            const emotionDiv = document.createElement('div');
+            emotionDiv.classList.add('date-emotion');
+            
+            if (entries[dateKey] && entries[dateKey].emotion) {
+                emotionDiv.innerText = entries[dateKey].emotion;
+            }
+            div.appendChild(emotionDiv);
+
+            div.addEventListener('click', () => {
+                selectedDate = new Date(dateObj);
+                if (isOtherMonth) {
+                    currentDate = new Date(dateObj);
+                    renderCalendar();
+                } else {
+                    renderCalendar();
+                }
+                loadEditorForSelectedDate();
+            });
+
+            return div;
+        }
+
+        function loadEditorForSelectedDate() {
+            const title = document.getElementById('selected-date-text');
+            const diaryText = document.getElementById('diary-text');
+            const emotionBtns = document.querySelectorAll('.emotion-btn');
+            const deleteBtn = document.getElementById('delete-btn');
+
+            title.innerText = `${selectedDate.getFullYear()}년 ${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`;
+
+            const dateKey = formatDateKey(selectedDate);
+            const entry = entries[dateKey];
+
+            // 폼 초기화
+            diaryText.value = '';
+            emotionBtns.forEach(b => b.classList.remove('selected'));
+            selectedEmotion = null;
+
+            if (entry) {
+                diaryText.value = entry.text || '';
+                if (entry.emotion) {
+                    selectedEmotion = entry.emotion;
+                    emotionBtns.forEach(b => {
+                        if(b.getAttribute('data-emotion') === entry.emotion) {
+                            b.classList.add('selected');
+                        }
+                    });
+                }
+                deleteBtn.style.display = 'block';
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+        }
+
+        function initEventListeners() {
+            const emotionBtns = document.querySelectorAll('.emotion-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const diaryText = document.getElementById('diary-text');
+            const deleteBtn = document.getElementById('delete-btn');
+
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+
+            emotionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    emotionBtns.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedEmotion = btn.getAttribute('data-emotion');
+                });
+            });
+
+            saveBtn.addEventListener('click', () => {
+                const text = diaryText.value.trim();
+                
+                if (!selectedEmotion && text) {
+                    alert('오늘의 감정을 닮은 달을 먼저 선택해주세요.');
+                    return;
+                }
+                if (!text && !selectedEmotion) {
+                    alert('기록할 내용을 입력해주세요.');
+                    return;
+                }
+
+                const dateKey = formatDateKey(selectedDate);
+                entries[dateKey] = {
+                    emotion: selectedEmotion || '',
+                    text: text,
+                    updatedAt: new Date().toISOString()
+                };
+
+                saveEntriesToStorage();
+                renderCalendar(); 
+                
+                deleteBtn.style.display = 'block';
+
+                const originalText = saveBtn.innerText;
+                saveBtn.innerText = '저장되었습니다 ✨';
+                setTimeout(() => {
+                    saveBtn.innerText = originalText;
+                }, 2000);
+            });
+
+            deleteBtn.addEventListener('click', () => {
+                if(confirm('이 날의 기록을 지우시겠습니까?')) {
+                    const dateKey = formatDateKey(selectedDate);
+                    delete entries[dateKey];
+                    saveEntriesToStorage();
+                    
+                    diaryText.value = '';
+                    selectedEmotion = null;
+                    emotionBtns.forEach(b => b.classList.remove('selected'));
+                    renderCalendar();
+                    
+                    deleteBtn.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
