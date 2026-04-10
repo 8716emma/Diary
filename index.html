@@ -10,14 +10,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* 기본: 블랙 모드 (Dark Mode) */
             --bg-color: #0b0c10;
+            --bg-gradient: radial-gradient(circle at top right, #1f2335, #0b0c10 70%);
             --moon-glow: rgba(255, 255, 200, 0.15);
+            --moon-color: #fffbe6;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #e0e2e4;
             --text-muted: #8b9298;
             --accent: #c5a880;
             --accent-hover: #dccaad;
+            --panel-shadow: rgba(0, 0, 0, 0.4);
+            --input-bg: rgba(0, 0, 0, 0.25);
+            --star-color: #fff;
+        }
+
+        [data-theme="light"] {
+            /* 화이트 모드 (Light Mode) */
+            --bg-color: #f4f7f6;
+            --bg-gradient: radial-gradient(circle at top right, #e0e7ff, #f4f7f6 70%);
+            --moon-glow: rgba(255, 223, 0, 0.2);
+            --moon-color: #ffefba;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --accent: #a67c52;
+            --accent-hover: #8b653b;
+            --panel-shadow: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.5);
+            --star-color: #a67c52;
         }
 
         * {
@@ -25,6 +48,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Gowun Dodum', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
         }
 
         body {
@@ -47,7 +71,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at top right, #1f2335, #0b0c10 70%);
+            background: var(--bg-gradient);
             z-index: -2;
         }
 
@@ -64,9 +88,13 @@
 
         .star {
             position: absolute;
-            background-color: #fff;
+            background-color: var(--star-color);
             border-radius: 50%;
             animation: twinkle infinite alternate;
+        }
+
+        [data-theme="light"] .star {
+            opacity: 0.3;
         }
 
         @keyframes twinkle {
@@ -81,7 +109,7 @@
             right: 15%;
             width: 90px;
             height: 90px;
-            background: #fffbe6;
+            background: var(--moon-color);
             border-radius: 50%;
             box-shadow: 
                 0 0 40px var(--moon-glow),
@@ -129,7 +157,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 25px 45px var(--panel-shadow);
             position: relative;
             overflow: hidden;
         }
@@ -140,18 +168,18 @@
             font-weight: 400;
             margin-bottom: 1.5rem;
             letter-spacing: 2px;
-            color: #fdfdfd;
-            text-shadow: 0 2px 10px rgba(255,255,255,0.1);
+            color: var(--text-main);
+            text-shadow: 0 2px 10px rgba(255,255,255,0.05);
         }
 
         /* 달력 (Calendar) 스타일 */
         .calendar {
             margin-bottom: 2rem;
             padding: 1.2rem;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.1);
             border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .calendar-header {
@@ -161,13 +189,13 @@
             margin-bottom: 1.2rem;
             font-size: 1.1rem;
             font-weight: bold;
-            color: #fdfdfd;
+            color: var(--text-main);
             letter-spacing: 1px;
         }
 
         .calendar-header button {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
             color: var(--text-main);
             border-radius: 50%;
             width: 30px;
@@ -181,7 +209,7 @@
 
         .calendar-header button:hover {
             background: var(--accent);
-            color: var(--bg-color);
+            color: #fff;
             border-color: var(--accent);
         }
 
@@ -218,13 +246,13 @@
         }
 
         .calendar-date:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--glass-bg);
         }
 
         .calendar-date.selected {
             background: rgba(197, 168, 128, 0.1);
             border: 1px solid var(--accent);
-            box-shadow: inset 0 0 10px rgba(197, 168, 128, 0.15);
+            box-shadow: inset 0 0 10px rgba(197, 168, 128, 0.1);
         }
 
         span.date-num {
@@ -237,10 +265,10 @@
         }
 
         .calendar-date.today span.date-num {
-            background: rgba(255,255,255,0.25);
+            background: var(--accent);
             font-weight: bold;
             color: #fff;
-            box-shadow: 0 0 8px rgba(255,255,255,0.2);
+            box-shadow: 0 0 8px rgba(197, 168, 128, 0.3);
         }
 
         .calendar-date.selected span.date-num {
@@ -249,7 +277,7 @@
         }
 
         .calendar-date.other-month {
-            color: rgba(255,255,255,0.2);
+            opacity: 0.3;
         }
 
         .date-emotion {
@@ -257,7 +285,6 @@
             margin-top: 2px;
             height: 18px;
             line-height: 18px;
-            filter: drop-shadow(0 0 3px rgba(255,255,255,0.4));
         }
 
         /* 기록 영역 (Editor) */
@@ -273,8 +300,8 @@
         .editor-header {
             text-align: center;
             margin-bottom: 1.5rem;
-            color: #fdfdfd;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-main);
+            border-bottom: 1px solid var(--glass-border);
             padding-bottom: 1rem;
         }
 
@@ -300,10 +327,10 @@
         .emotions {
             display: flex;
             justify-content: space-evenly;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.1);
             border-radius: 40px;
             padding: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
         }
 
         .emotion-btn {
@@ -328,7 +355,7 @@
             transform: scale(1.25);
             filter: grayscale(0%);
             opacity: 1;
-            background: rgba(255,255,255,0.08);
+            background: var(--glass-bg);
             box-shadow: 0 0 15px rgba(255,255,255,0.1);
         }
 
@@ -336,7 +363,7 @@
         .diary-input {
             width: 100%;
             min-height: 180px;
-            background: rgba(0,0,0,0.25);
+            background: var(--input-bg);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 1.2rem;
@@ -352,11 +379,12 @@
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 15px rgba(197, 168, 128, 0.15);
-            background: rgba(0,0,0,0.4);
+            background: var(--glass-bg);
         }
 
         .diary-input::placeholder {
-            color: #5a6168;
+            color: var(--text-muted);
+            opacity: 0.5;
         }
 
         /* 하단 버튼들 */
@@ -385,7 +413,7 @@
 
         button.save-btn:hover {
             background: var(--accent);
-            color: var(--bg-color);
+            color: #fff;
             box-shadow: 0 0 15px rgba(197, 168, 128, 0.3);
             font-weight: bold;
         }
@@ -399,7 +427,7 @@
 
         button.delete-btn:hover {
             background: #e06c75;
-            color: var(--bg-color);
+            color: #fff;
             box-shadow: 0 0 15px rgba(224, 108, 117, 0.3);
             font-weight: bold;
         }
@@ -422,7 +450,7 @@
         .contact-form input, 
         .contact-form textarea {
             width: 100%;
-            background: rgba(0,0,0,0.25);
+            background: var(--input-bg);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 0.9rem;
@@ -437,7 +465,7 @@
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 15px rgba(197, 168, 128, 0.15);
-            background: rgba(0,0,0,0.4);
+            background: var(--glass-bg);
         }
 
         .contact-form button[type="submit"] {
@@ -457,9 +485,25 @@
 
         .contact-form button[type="submit"]:hover {
             background: var(--accent);
-            color: var(--bg-color);
+            color: #fff;
             box-shadow: 0 0 15px rgba(197, 168, 128, 0.3);
             font-weight: bold;
+        }
+
+        /* 테마 토글 버튼 전용 스타일 */
+        .theme-toggle-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            background: var(--glass-bg);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         @media (max-width: 480px) {
@@ -477,8 +521,12 @@
     <div class="stars" id="stars"></div>
     <div class="moon"></div>
 
-    <div style="position: fixed; top: 20px; left: 20px; z-index: 100;">
-        <a href="#contact-section" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; background: var(--glass-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(5px);">제휴 문의</a>
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 100; display: flex; gap: 10px;">
+        <a href="#contact-section" style="color: var(--text-main); text-decoration: none; font-size: 0.9rem; background: var(--glass-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(5px);">제휴 문의</a>
+        <button id="theme-toggle" class="theme-toggle-btn">
+            <span id="theme-icon">🌙</span>
+            <span id="theme-text">블랙 모드</span>
+        </button>
     </div>
 
     <div class="container">
@@ -557,6 +605,7 @@
 
         // 초기화
         document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
             createStars();
             loadEntriesFromStorage();
             renderCalendar();
@@ -565,6 +614,33 @@
             // 이벤트 리스너 등록
             initEventListeners();
         });
+
+        // 테마 초기화
+        function initTheme() {
+            const savedTheme = localStorage.getItem('moonlight_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeUI(savedTheme);
+        }
+
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            if (theme === 'light') {
+                icon.innerText = '☀️';
+                text.innerText = '화이트 모드';
+            } else {
+                icon.innerText = '🌙';
+                text.innerText = '블랙 모드';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('moonlight_theme', newTheme);
+            updateThemeUI(newTheme);
+        }
 
         // 별 배경 생성
         function createStars() {
@@ -748,6 +824,9 @@
             const saveBtn = document.getElementById('save-btn');
             const diaryText = document.getElementById('diary-text');
             const deleteBtn = document.getElementById('delete-btn');
+            const themeToggle = document.getElementById('theme-toggle');
+
+            themeToggle.addEventListener('click', toggleTheme);
 
             document.getElementById('prev-month').addEventListener('click', () => {
                 currentDate.setMonth(currentDate.getMonth() - 1);
