@@ -14,10 +14,12 @@
 - **AI 동물상 테스트 (`index1.html`)**:
   - Google Teachable Machine 모델을 연동하여 사진 업로드를 통해 사용자가 강아지상인지 고양이상인지 분석합니다.
   - 확률에 따른 동적 프로그레스 바 UI 및 상세 결과 메시지.
-- **제휴 문의 폼**: Formspree를 연동하여 사용자가 직접 문의를 보낼 수 있는 폼을 구현했습니다.
+- **제휴 문의 (`contact.html`)**:
+  - 별도의 페이지로 분리된 제휴 문의 창입니다. Formspree를 연동하여 사용자가 직접 문의를 보낼 수 있습니다.
 - **댓글 기능 (Disqus)**: 사용자 간의 소통을 위해 `index.html`과 `index1.html` 하단에 Disqus 댓글 시스템을 통합했습니다.
 
 ## 최근 변경 사항
+- **제휴 문의 페이지 분리**: 기존 `index.html`에 포함되어 있던 제휴 문의 섹션을 별도의 `contact.html` 페이지로 분리하여 접근성을 높였습니다.
 - **Disqus 댓글 기능 추가**: 모든 주요 페이지(`index.html`, `index1.html`) 하단에 실시간 댓글 창을 구현했습니다.
 - **Google AdSense 통합**: 사이트 수익화를 위해 Google AdSense 광고 스크립트를 추가했습니다.
 - **달빛 일기장 추가**: 감성적인 일기 쓰기 및 감정 추적 기능을 구현했습니다.
@@ -27,7 +29,7 @@
 - HTML5 (Canvas)
 - CSS3 (Modern Features: CSS Variables, Flexbox, Transitions, Backdrop-filter)
 - JavaScript (ES6 Modules, LocalStorage, TensorFlow.js)
-- Third-party: Google AdSense, Teachable Machine, Formspree
+- Third-party: Google AdSense, Teachable Machine, Formspree, Disqus
 
 ## 향후 계획
 - Google AdSense 광고 단위(Ad Units) 배치 최적화.

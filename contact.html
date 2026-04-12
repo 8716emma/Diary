@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HAPPY.LAB 제휴 문의 페이지입니다. 협업 및 광고 문의를 남겨주세요.">
+    <title>제휴 문의 - HAPPY.LAB</title>
+    <!-- 부드러운 폰트: 고운 돋움 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --bg-gradient: radial-gradient(circle at top right, #1f2335, #0b0c10 70%);
+            --moon-glow: rgba(255, 255, 200, 0.15);
+            --moon-color: #fffbe6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #e0e2e4;
+            --text-muted: #8b9298;
+            --accent: #c5a880;
+            --accent-hover: #dccaad;
+            --panel-shadow: rgba(0, 0, 0, 0.4);
+            --input-bg: rgba(0, 0, 0, 0.25);
+            --star-color: #fff;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f4f7f6;
+            --bg-gradient: radial-gradient(circle at top right, #e0e7ff, #f4f7f6 70%);
+            --moon-glow: rgba(255, 223, 0, 0.2);
+            --moon-color: #ffefba;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --accent: #a67c52;
+            --accent-hover: #8b653b;
+            --panel-shadow: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.5);
+            --star-color: #a67c52;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Gowun Dodum', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient);
+            z-index: -2;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background-color: var(--star-color);
+            border-radius: 50%;
+            animation: twinkle infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.1; transform: scale(0.8); }
+            100% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        nav.gnb {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        nav.gnb ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+        nav.gnb a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav.gnb a:hover { color: var(--accent); }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            z-index: 10;
+            margin-top: 80px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 45px var(--panel-shadow);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            color: var(--text-main);
+        }
+
+        .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+        .contact-form label { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.4rem; display: block; padding-left: 0.5rem; }
+        .contact-form input, .contact-form textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1rem; color: var(--text-main); font-family: inherit; font-size: 0.95rem; transition: all 0.3s ease; }
+        .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px rgba(197, 168, 128, 0.15); background: var(--glass-bg); }
+        .contact-form button[type="submit"] { width: 100%; margin-top: 0.5rem; border: 1px solid var(--accent); color: var(--accent); padding: 1rem; background: transparent; font-family: inherit; font-size: 1.1rem; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; font-weight: bold; }
+        .contact-form button[type="submit"]:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px rgba(197, 168, 128, 0.3); }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <nav class="gnb">
+        <ul>
+            <li><a href="index.html">달빛 일기장</a></li>
+            <li><a href="index1.html">돌림판 & AI 테스트</a></li>
+            <li><a href="privacy.html">개인정보처리방침</a></li>
+        </ul>
+    </nav>
+
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="glass-panel">
+            <h1>제휴 문의</h1>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;">
+                HAPPY.LAB과 함께하고 싶은 제안이 있으신가요?<br>언제든 편하게 연락주세요.
+            </p>
+            <form action="https://formspree.io/f/xykbqnkr" method="POST" class="contact-form">
+                <div>
+                    <label for="email">답신 받을 이메일</label>
+                    <input type="email" name="email" id="email" placeholder="example@email.com" required>
+                </div>
+                <div>
+                    <label for="message">문의 내용</label>
+                    <textarea name="message" id="message" rows="6" placeholder="제휴 제안이나 문의 내용을 자유롭게 적어주세요..." required></textarea>
+                </div>
+                <button type="submit">문의 보내기</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 HAPPY.LAB. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 별 생성 스크립트
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 2 + 0.5}px`;
+                star.style.height = star.style.width;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // 테마 로드
+        const savedTheme = localStorage.getItem('moonlight_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</body>
+</html>
