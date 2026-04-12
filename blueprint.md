@@ -19,6 +19,7 @@
 - **댓글 기능 (Disqus)**: 사용자 간의 소통을 위해 `index.html`과 `index1.html` 하단에 Disqus 댓글 시스템을 통합했습니다.
 
 ## 최근 변경 사항
+- **Google Analytics (GA4) 통합**: 모든 페이지에 Google Analytics 추적 스크립트를 추가하여 사용자 행동 분석을 가능하게 했습니다.
 - **제휴 문의 페이지 분리**: 기존 `index.html`에 포함되어 있던 제휴 문의 섹션을 별도의 `contact.html` 페이지로 분리하여 접근성을 높였습니다.
 - **Disqus 댓글 기능 추가**: 모든 주요 페이지(`index.html`, `index1.html`) 하단에 실시간 댓글 창을 구현했습니다.
 - **Google AdSense 통합**: 사이트 수익화를 위해 Google AdSense 광고 스크립트를 추가했습니다.
@@ -29,7 +30,7 @@
 - HTML5 (Canvas)
 - CSS3 (Modern Features: CSS Variables, Flexbox, Transitions, Backdrop-filter)
 - JavaScript (ES6 Modules, LocalStorage, TensorFlow.js)
-- Third-party: Google AdSense, Teachable Machine, Formspree, Disqus
+- Third-party: Google AdSense, Google Analytics (GA4), Teachable Machine, Formspree, Disqus
 
 ## 향후 계획
 - Google AdSense 광고 단위(Ad Units) 배치 최적화.
