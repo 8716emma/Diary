@@ -15,8 +15,10 @@
   - Google Teachable Machine 모델을 연동하여 사진 업로드를 통해 사용자가 강아지상인지 고양이상인지 분석합니다.
   - 확률에 따른 동적 프로그레스 바 UI 및 상세 결과 메시지.
 - **제휴 문의 폼**: Formspree를 연동하여 사용자가 직접 문의를 보낼 수 있는 폼을 구현했습니다.
+- **댓글 기능 (Disqus)**: 사용자 간의 소통을 위해 `index.html`과 `index1.html` 하단에 Disqus 댓글 시스템을 통합했습니다.
 
 ## 최근 변경 사항
+- **Disqus 댓글 기능 추가**: 모든 주요 페이지(`index.html`, `index1.html`) 하단에 실시간 댓글 창을 구현했습니다.
 - **Google AdSense 통합**: 사이트 수익화를 위해 Google AdSense 광고 스크립트를 추가했습니다.
 - **달빛 일기장 추가**: 감성적인 일기 쓰기 및 감정 추적 기능을 구현했습니다.
 - **AI 동물상 테스트 추가**: TensorFlow.js 및 Teachable Machine Image 라이브러리를 사용하여 구현했습니다.
